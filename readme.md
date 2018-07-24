@@ -12,6 +12,25 @@ echo Bnomei\Fingerprint::js('/assets/js/index.min.js');
 echo $page->image('ukulele.jpg')->fingerprint();
 ```
 
+## Setup
+
+Add the following lines to your htaccess file (after RewriteBase) unless you use a different hash function (see settings):
+
+```
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)\.([0-9]{10})\.(js|css)$ $1.$3 [L]
+```
+
+Or for Nginx you can add the following to your virtual host setup:
+
+```
+location /assets {
+    if (!-e $request_filename) {
+        rewrite "^/(.+)\.([0-9]{10})\.(js|css)$" /$1.$3 break;
+    }
+}
+```
+
 ## Settings
 
 **hash**
@@ -37,4 +56,4 @@ It is discouraged to use this plugin in any project that promotes racism, sexism
 
 ## Credits
 
-@iksi, https://github.com/iksi/kirby-fingerprint (Kirby V2)
+based on [@iksi](https://github.com/iksi) https://github.com/iksi/kirby-fingerprint (Kirby V2)
