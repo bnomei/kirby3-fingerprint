@@ -14,7 +14,7 @@ echo $page->image('ukulele.jpg')->fingerprint();
 
 ## Settings
 
-** hash **
+**hash**
 _default: null_
 which yields `function ($file) { return \filemtime($file); }`.
 
