@@ -1,0 +1,20 @@
+{
+    "name": "bnomei/fingerprint",
+    "type": "plugin",
+    "version": "1.0.0",
+    "autoload": {
+        "files": [
+            "config.php"
+        ],
+        "psr-4": {
+            "Bnomei\\": "classes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bruno Meilick",
+            "email": "b@bnomei.com"
+        }
+    ],
+    "require": {}
+}
