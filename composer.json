@@ -1,5 +1,5 @@
 {
-    "name": "bnomei/fingerprint",
+    "name": "bnomei/kirby3-fingerprint",
     "type": "plugin",
     "version": "1.0.0",
     "autoload": {
