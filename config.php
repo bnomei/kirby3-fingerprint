@@ -2,7 +2,9 @@
 
 Kirby::plugin('bnomei/fingerprint', [
   'options' => [
-    'hash' => null, // defaults to: function ($file) { return \filemtime($file); }
+    'hash' => function ($file, $extension) { 
+      return $extension . '?v=' . \filemtime($file); 
+    }
   ],
   'fileMethods' => [
     'fingerprint' => function ($file) {

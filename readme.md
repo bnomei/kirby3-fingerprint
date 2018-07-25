@@ -12,7 +12,12 @@ echo Bnomei\Fingerprint::js('/assets/js/index.min.js');
 echo $page->image('ukulele.jpg')->fingerprint();
 ```
 
-## Setup
+## Settings
+
+**hash**
+default: will lead to query string and does not require htaccess setup. thanks @fabianmichael. [#1](https://github.com/bnomei/kirby3-fingerprint/issues/1)
+
+## Setup for filemtime()
 
 Add the following lines to your htaccess file (after RewriteBase) unless you use a different hash function (see settings):
 
@@ -30,14 +35,6 @@ location /assets {
     }
 }
 ```
-
-## Settings
-
-**hash**
-_default: null_
-which yields `function ($file) { return \filemtime($file); }`.
-
-> NOTE: config settings do not override plugin settings (yet). issue pending.
 
 ## TODO
 

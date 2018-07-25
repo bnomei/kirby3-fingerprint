@@ -23,14 +23,14 @@ class Fingerprint
         return in_array( $_SERVER['REMOTE_ADDR'], array( '127.0.0.1', '::1' ));
     }
 
-    static private function fingerprint($file) {
+    static private function fingerprint($file, $extension) {
         $callback = option('bnomei.fingerprint.hash', null);
 
         if($callback && is_callable($callback)) {
-            return call_user_func_array($callback, [$file]);
+            return call_user_func_array($callback, [$file, $extension]);
         }
 
-        return \filemtime($file);
+        return \filemtime($file) . '.' . $extension;
     }
 
     static public function injectFileMTime($url) {
@@ -40,7 +40,7 @@ class Fingerprint
             \Kirby\CMS\App::instance()->roots()->index() . DIRECTORY_SEPARATOR . ltrim($url, '/');
 
         if(\F::exists($file)) {
-            $filename = \F::name($file) . '.' . static::fingerprint($file) . '.' . \F::extension($file);
+            $filename = \F::name($file) . '.' . static::fingerprint($file, \F::extension($file));
             $dirname = \dirname($file);
             $url = ($dirname === '.') ? $filename : ($dirname . '/' . $filename);
         }
