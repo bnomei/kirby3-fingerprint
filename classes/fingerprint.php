@@ -4,46 +4,137 @@ namespace Bnomei;
 
 class Fingerprint
 {
-    static public function css($url) {
-        return \css(self::injectFileMTime($url)); // TODO:
+    public static function css($url, $attrs = [])
+    {
+        if ($url === '@auto') {
+            if ($assetUrl = \Kirby\Cms\Url::toTemplateAsset('css/templates', 'css')) {
+                $url = $assetUrl;
+            }
+        }
+        $fingerprint = static::process($url);
+        $sri = \Kirby\Toolkit\A::get($attrs, 'integrity', false);
+        if ($sri === true) {
+            $sri = $fingerprint['integrity'];
+        }
+        if ($sri && strlen($sri) > 0) {
+            $attrs['integrity'] = $sri;
+            $attrs['crossorigin'] = \Kirby\Toolkit\A::get($attrs, 'crossorigin', 'anonymous');
+        } elseif (\Kirby\Toolkit\A::get($attrs, 'integrity')) {
+            unset($attrs[array_search('integrity', $attrs)]);
+        }
+
+        return \css($fingerprint['hash'], $attrs);
     }
 
-    static public function js($url) {
-        return \js(self::injectFileMTime($url)); // TODO:
+    public static function js($url, $attrs = [])
+    {
+        if ($url === '@auto') {
+            if ($assetUrl = \Kirby\Cms\Url::toTemplateAsset('js/templates', 'js')) {
+                $url = $assetUrl;
+            }
+        }
+        $fingerprint = static::process($url);
+        $sri = \Kirby\Toolkit\A::get($attrs, 'integrity', false);
+        if ($sri === true) {
+            $sri = $fingerprint['integrity'];
+        }
+        if ($sri && strlen($sri) > 0) {
+            $attrs['integrity'] = $sri;
+            $attrs['crossorigin'] = \Kirby\Toolkit\A::get($attrs, 'crossorigin', 'anonymous');
+        } elseif (\Kirby\Toolkit\A::get($attrs, 'integrity')) {
+            unset($attrs[array_search('integrity', $attrs)]);
+        }
+
+        return \js($fingerprint['hash'], $attrs);
     }
 
-    static private function isWebpack() {
+    public static function process($file)
+    {
+        $needsPush = false;
+        $key = null;
+        $root = null;
+        $mod = null;
+        $sri = null;
+        $url = null;
+
+        if (static::isLocalhost() || static::isWebpack()) {
+            kirby()->cache('bnomei.fingerprint')->flush();
+        }
+
+        $lookup = kirby()->cache('bnomei.fingerprint')->get('lookup');
+        if (!$lookup) {
+            $lookup = [];
+            $needsPush = true;
+        }
+        if (is_a($file, 'File')) {
+            $key = $file->id();
+            $root = $file->root();
+            $mod = \filemtime($root);
+            $url = $file->url();
+        } elseif (!\Kirby\Toolkit\V::url($file)) {
+            $key = ltrim($file, '/');
+            $root = kirby()->roots()->index() . DIRECTORY_SEPARATOR . $key;
+            if (\Kirby\Toolkit\F::exists($root)) {
+                $mod = \filemtime($root);
+                $url = \url($key);
+            }
+        } else {
+            $key = $file;
+        }
+
+        if (\array_key_exists($key, $lookup)) {
+            if ($mod && $lookup[$key]['modified'] < $mod) {
+                $needsPush = true;
+            }
+        }
+
+        if ($needsPush) {
+            $lookup[$key] = [
+                'modified' => $mod,
+                'root' => $root,
+                'integrity' => null,
+                'hash' => $url,
+            ];
+            if (!static::isLocalhost() && !static::isWebpack()) {
+                $lookup[$key]['integrity'] = static::sriFile($file);
+                $lookup[$key]['hash'] = static::hashFile($file);
+            }
+            kirby()->cache('bnomei.fingerprint')->set('lookup', $lookup);
+        }
+
+        return \Kirby\Toolkit\A::get($lookup, $key);
+    }
+
+    private static function isWebpack()
+    {
         return !!(
             isset($_SERVER['HTTP_X_FORWARDED_FOR'])
             && $_SERVER['HTTP_X_FORWARDED_FOR'] == 'webpack'
         );
     }
 
-    static private function isLocalhost() {
-        return in_array( $_SERVER['REMOTE_ADDR'], array( '127.0.0.1', '::1' ));
+    private static function isLocalhost()
+    {
+        return in_array($_SERVER['REMOTE_ADDR'], array( '127.0.0.1', '::1' ));
     }
 
-    static private function fingerprint($file, $extension) {
+    private static function hashFile($file)
+    {
         $callback = option('bnomei.fingerprint.hash', null);
 
-        if($callback && is_callable($callback)) {
-            return call_user_func_array($callback, [$file, $extension]);
+        if ($callback && is_callable($callback)) {
+            return call_user_func_array($callback, [$file]);
         }
-
-        return \filemtime($file) . '.' . $extension;
+        return null;
     }
 
-    static public function injectFileMTime($url) {
-        if(self::isWebpack() || self::isLocalhost()) return $url;
+    private static function sriFile($file)
+    {
+        $callback = option('bnomei.fingerprint.integrity', null);
 
-        $file = is_a($url, 'File') ? $file->root() : 
-            \Kirby\CMS\App::instance()->roots()->index() . DIRECTORY_SEPARATOR . ltrim($url, '/');
-
-        if(\F::exists($file)) {
-            $filename = \F::name($file) . '.' . static::fingerprint($file, \F::extension($file));
-            $dirname = \dirname($file);
-            $url = ($dirname === '.') ? $filename : ($dirname . '/' . $filename);
+        if ($callback && is_callable($callback)) {
+            return call_user_func_array($callback, [$file]);
         }
-        return $url;
+        return null;
     }
 }
