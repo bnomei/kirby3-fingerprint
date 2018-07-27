@@ -66,7 +66,7 @@ class Fingerprint
             $lookup = [];
             $needsPush = true;
         }
-        if (is_a($file, 'File')) {
+        if (is_a($file, 'Kirby\CMS\File')) {
             $key = $file->id();
             $root = $file->root();
             $mod = \filemtime($root);
