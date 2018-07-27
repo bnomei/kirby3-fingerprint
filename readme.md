@@ -18,9 +18,9 @@ echo Bnomei\Fingerprint::js('/assets/js/index.min.js');
 // https://../assets/js/index.min.js?v=1203291283
 
 echo $page->file('ukulele.pdf')->fingerprint();
-// https://../ukulele.1203291283.pdf
+// https://../ukulele.pdf?v=1203291283
 
-echo $page->image('ukulele.pdf')->integrity();
+echo $page->file('ukulele.pdf')->integrity();
 // sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC
 
 // generate sri from local file
