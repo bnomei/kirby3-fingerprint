@@ -44,11 +44,11 @@ Kirby::plugin('bnomei/fingerprint', [
     }
   ],
   'fileMethods' => [
-    'fingerprint' => function ($file) {
-        return \Bnomei\Fingerprint::process($file)['hash'];
+    'fingerprint' => function () {
+        return \Bnomei\Fingerprint::process($this)['hash'];
     },
-    'integrity' => function ($file) {
-        return \Bnomei\Fingerprint::process($file)['integrity'];
+    'integrity' => function () {
+        return \Bnomei\Fingerprint::process($this)['integrity'];
     }
   ]
 ]);
