@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "85f2562a81130ad328acbdac9ddfd94a",
+    "hash": "391f3c54543fe2afd778272489c0aa14",
+    "content-hash": "6ad4e0b598bf4f413d76fbf8cf63e4dc",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -43,7 +44,7 @@
                 }
             ],
             "description": "A PHP class that makes working with images as simple as possible.",
-            "time": "2017-09-12T09:03:56+00:00"
+            "time": "2017-09-12 09:03:56"
         },
         {
             "name": "defuse/php-encryption",
@@ -106,7 +107,7 @@
                 "security",
                 "symmetric key cryptography"
             ],
-            "time": "2018-07-24T23:27:56+00:00"
+            "time": "2018-07-24 23:27:56"
         },
         {
             "name": "erusev/parsedown",
@@ -152,7 +153,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2018-06-11T18:15:32+00:00"
+            "time": "2018-06-11 18:15:32"
         },
         {
             "name": "erusev/parsedown-extra",
@@ -202,7 +203,7 @@
                 "parsedown",
                 "parser"
             ],
-            "time": "2018-05-08T21:54:32+00:00"
+            "time": "2018-05-08 21:54:32"
         },
         {
             "name": "filp/whoops",
@@ -263,20 +264,20 @@
                 "throwable",
                 "whoops"
             ],
-            "time": "2018-03-03T17:56:25+00:00"
+            "time": "2018-03-03 17:56:25"
         },
         {
             "name": "getkirby/cms",
-            "version": "3.0.0-beta-3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-next/kirby.git",
-                "reference": "c55475cea1e5e2c8cb7c52f33e46a11ab95437db"
+                "reference": "33c2b1334e72d408caf20b8b659544d533214f9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-next/kirby/zipball/c55475cea1e5e2c8cb7c52f33e46a11ab95437db",
-                "reference": "c55475cea1e5e2c8cb7c52f33e46a11ab95437db",
+                "url": "https://api.github.com/repos/k-next/kirby/zipball/33c2b1334e72d408caf20b8b659544d533214f9f",
+                "reference": "33c2b1334e72d408caf20b8b659544d533214f9f",
                 "shasum": ""
             },
             "archive": {
@@ -373,7 +374,7 @@
                 "forum": "https://forum.getkirby.com",
                 "source": "https://github.com/getkirby/kirby"
             },
-            "time": "2018-07-20T11:51:17+00:00"
+            "time": "2018-07-26 15:25:52"
         },
         {
             "name": "league/color-extractor",
@@ -427,7 +428,7 @@
                 "image",
                 "palette"
             ],
-            "time": "2016-12-15T09:30:02+00:00"
+            "time": "2016-12-15 09:30:02"
         },
         {
             "name": "michelf/php-smartypants",
@@ -477,7 +478,7 @@
                 "typographer",
                 "typography"
             ],
-            "time": "2016-12-13T01:01:17+00:00"
+            "time": "2016-12-13 01:01:17"
         },
         {
             "name": "mustangostang/spyc",
@@ -527,7 +528,7 @@
                 "yaml",
                 "yml"
             ],
-            "time": "2017-02-24T16:06:33+00:00"
+            "time": "2017-02-24 16:06:33"
         },
         {
             "name": "paragonie/random_compat",
@@ -572,7 +573,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2018-07-02T15:55:56+00:00"
+            "time": "2018-07-02 15:55:56"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -638,7 +639,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2018-03-27T13:49:45+00:00"
+            "time": "2018-03-27 13:49:45"
         },
         {
             "name": "psr/log",
@@ -685,7 +686,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10T12:19:37+00:00"
+            "time": "2016-10-10 12:19:37"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -744,7 +745,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-04-26T10:06:28+00:00"
+            "time": "2018-04-26 10:06:28"
         },
         {
             "name": "true/punycode",
@@ -790,13 +791,22 @@
                 "idna",
                 "punycode"
             ],
-            "time": "2016-11-16T10:37:54+00:00"
+            "time": "2016-11-16 10:37:54"
         }
     ],
     "packages-dev": [],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "3.0.0",
+            "alias_normalized": "3.0.0.0",
+            "version": "9999999-dev",
+            "package": "getkirby/cms"
+        }
+    ],
     "minimum-stability": "beta",
-    "stability-flags": [],
+    "stability-flags": {
+        "getkirby/cms": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
