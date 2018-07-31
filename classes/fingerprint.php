@@ -2,6 +2,9 @@
 
 namespace Bnomei;
 
+use \Kirby\Cms;
+use \Kirby\Toolkit;
+
 class Fingerprint
 {
     public static function css($url, $attrs = [])
