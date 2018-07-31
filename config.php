@@ -5,15 +5,15 @@ Kirby::plugin('bnomei/fingerprint', [
     'cache' => true,
     'hash' => function ($file) {
         $url = null;
-        $fileroot = is_a($file, 'File') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
+        $fileroot = is_a($file, 'Kirby\Cms\File') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
 
         if (\Kirby\Toolkit\F::exists($fileroot)) {
             $filename = implode('.', [
                 \Kirby\Toolkit\F::name($fileroot),
                 \Kirby\Toolkit\F::extension($fileroot) . '?v=' . \filemtime($fileroot)
             ]);
+            $dirname = \dirname($fileroot);
 
-            $dirname = \dirname($file);
             $url = ($dirname === '.') ? $filename : ($dirname . '/' . $filename);
         } else {
             $url = $file;
@@ -22,7 +22,7 @@ Kirby::plugin('bnomei/fingerprint', [
     },
     'integrity' => function ($file) {
         $sri = null;
-        $file = is_a($file, 'File') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
+        $file = is_a($file, 'Kirby\Cms\File') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
 
         if (!\Kirby\Toolkit\F::exists($file)) {
             return null;
