@@ -64,16 +64,17 @@ class Fingerprint
             kirby()->cache('bnomei.fingerprint')->flush();
         }
 
-        $lookup = kirby()->cache('bnomei.fingerprint')->get('lookup');
+        $cacheWithVersion = 'lookup' . str_replace('.','', kirby()->plugin('bnomei/fingerprint')->version());
+        $lookup = kirby()->cache('bnomei.fingerprint')->get($cacheWithVersion);
         if (!$lookup) {
             $lookup = [];
             $needsPush = true;
         }
         if (is_a($file, 'Kirby\CMS\File')) {
-            $key = $file->id();
-            $root = $file->root();
+            $key = (string)$file->id();
+            $root = (string)$file->root();
             $mod = \filemtime($root);
-            $url = $file->url();
+            $url = (string)$file->url();
         } elseif (!\Kirby\Toolkit\V::url($file)) {
             $key = ltrim($file, '/');
             $root = kirby()->roots()->index() . DIRECTORY_SEPARATOR . $key;
@@ -89,6 +90,8 @@ class Fingerprint
             if ($mod && $lookup[$key]['modified'] < $mod) {
                 $needsPush = true;
             }
+        } else {
+            $needsPush = true;
         }
 
         if ($needsPush) {
@@ -102,7 +105,8 @@ class Fingerprint
                 $lookup[$key]['integrity'] = static::sriFile($file);
                 $lookup[$key]['hash'] = static::hashFile($file);
             }
-            kirby()->cache('bnomei.fingerprint')->set('lookup', $lookup);
+            
+            kirby()->cache('bnomei.fingerprint')->set($cacheWithVersion, $lookup);
         }
 
         return \Kirby\Toolkit\A::get($lookup, $key);

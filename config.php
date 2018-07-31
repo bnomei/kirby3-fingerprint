@@ -12,9 +12,13 @@ Kirby::plugin('bnomei/fingerprint', [
                 \Kirby\Toolkit\F::name($fileroot),
                 \Kirby\Toolkit\F::extension($fileroot) . '?v=' . \filemtime($fileroot)
             ]);
-            $dirname = \dirname($fileroot);
 
-            $url = ($dirname === '.') ? $filename : ($dirname . '/' . $filename);
+            if(is_a($file, 'Kirby\Cms\File')) {
+                $url = str_replace($file->filename(), $filename, $file->url());
+            } else {
+                $dirname = str_replace(kirby()->roots()->index(), '', \dirname($fileroot));
+                $url = ($dirname === '.') ? $filename : ($dirname . '/' . $filename);
+            }
         } else {
             $url = $file;
         }
