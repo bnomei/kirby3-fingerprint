@@ -3,6 +3,9 @@
 Kirby::plugin('bnomei/fingerprint', [
   'options' => [
     'cache' => true,
+    'ssl' => function() {
+        return false;
+    },
     'hash' => function ($file) {
         $url = null;
         $fileroot = is_a($file, 'Kirby\Cms\File') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');

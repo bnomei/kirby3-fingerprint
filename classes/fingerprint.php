@@ -26,7 +26,7 @@ class Fingerprint
             unset($attrs[array_search('integrity', $attrs)]);
         }
 
-        return \css($fingerprint['hash'], $attrs);
+        return static::ssl(\css($fingerprint['hash'], $attrs));
     }
 
     public static function js($url, $attrs = [])
@@ -48,7 +48,7 @@ class Fingerprint
             unset($attrs[array_search('integrity', $attrs)]);
         }
 
-        return \js($fingerprint['hash'], $attrs);
+        return static::ssl(\js($fingerprint['hash'], $attrs));
     }
 
     public static function process($file)
@@ -74,13 +74,13 @@ class Fingerprint
             $key = (string)$file->id();
             $root = (string)$file->root();
             $mod = \filemtime($root);
-            $url = (string)$file->url();
+            $url = static::ssl((string)$file->url());
         } elseif (!\Kirby\Toolkit\V::url($file)) {
             $key = ltrim($file, '/');
             $root = kirby()->roots()->index() . DIRECTORY_SEPARATOR . $key;
             if (\Kirby\Toolkit\F::exists($root)) {
                 $mod = \filemtime($root);
-                $url = \url($key);
+                $url = static::ssl(\url($key));
             }
         } else {
             $key = $file;
@@ -143,5 +143,16 @@ class Fingerprint
             return call_user_func_array($callback, [$file]);
         }
         return null;
+    }
+
+    private static function ssl($url) {
+        $callback = option('bnomei.fingerprint.ssl', null);
+        if ($callback && is_callable($callback)) {
+            $callback = $callback();
+        }
+        if($callback) {
+            $url = str_replace('http://', 'https://', $url);
+        }
+        return $url;
     }
 }

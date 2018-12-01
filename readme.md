@@ -59,6 +59,9 @@ echo Bnomei\Fingerprint::js(
 **integrity**
 - to disable sri set option `'integrity' => null,`
 
+**ssl**
+- default: `false`. boolean value or callback to force *https* scheme.
+
 ## Disclaimer
 
 This plugin is provided "as is" with no guarantee. Use it at your own risk and always test it yourself before using it in a production environment. If you find any issues, please [create a new issue](https://github.com/bnomei/kirby3-fingerprint/issues/new).
