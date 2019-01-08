@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "084f657584e8341f86ebe4ad5606244e",
+    "content-hash": "93532dd17c1e11eead48942c399b70ed",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -108,16 +108,16 @@
         },
         {
             "name": "getkirby/cms",
-            "version": "3.0.0-RC-2.0",
+            "version": "3.0.0-RC-4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/k-next/kirby.git",
-                "reference": "0d24600687e74ed74a9005e80d8ac740400c420b"
+                "reference": "4fef488a4a1b9644f8b89df227829fc1b6f9d108"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/k-next/kirby/zipball/0d24600687e74ed74a9005e80d8ac740400c420b",
-                "reference": "0d24600687e74ed74a9005e80d8ac740400c420b",
+                "url": "https://api.github.com/repos/k-next/kirby/zipball/4fef488a4a1b9644f8b89df227829fc1b6f9d108",
+                "reference": "4fef488a4a1b9644f8b89df227829fc1b6f9d108",
                 "shasum": ""
             },
             "archive": {
@@ -152,6 +152,7 @@
             },
             "require": {
                 "claviska/simpleimage": "3.3.*",
+                "ext-ctype": "*",
                 "ext-mbstring": "*",
                 "filp/whoops": "2.3.*",
                 "getkirby/composer-installer": "*",
@@ -164,6 +165,7 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.11.1",
+                "phpstan/phpstan": "^0.10.7",
                 "phpunit/phpunit": "^6.0"
             },
             "type": "kirby-cms",
@@ -172,9 +174,9 @@
                     "config/helpers.php",
                     "config/aliases.php"
                 ],
-                "psr-0": {
-                    "Parsedown": "dependencies/"
-                },
+                "classmap": [
+                    "dependencies/"
+                ],
                 "psr-4": {
                     "Kirby\\": "src/"
                 }
@@ -185,6 +187,9 @@
                 }
             },
             "scripts": {
+                "analyze": [
+                    "./vendor/bin/phpstan analyse src"
+                ],
                 "test": [
                     "./vendor/bin/phpunit --stderr --coverage-html=tests/coverage"
                 ],
@@ -217,7 +222,7 @@
                 "forum": "https://forum.getkirby.com",
                 "source": "https://github.com/getkirby/kirby"
             },
-            "time": "2018-12-21T11:50:32+00:00"
+            "time": "2019-01-07T16:07:18+00:00"
         },
         {
             "name": "getkirby/composer-installer",

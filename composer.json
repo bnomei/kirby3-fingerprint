@@ -1,7 +1,7 @@
 {
     "name": "bnomei/kirby3-fingerprint",
     "type": "plugin",
-    "version": "2.2.4",
+    "version": "2.2.5",
     "description": "File Method and css/js helper to add cachbusting hash and optional Subresource Integrity to file",
     "license": "MIT",
     "authors": [
@@ -48,6 +48,7 @@
     },
     "scripts": {
         "zip": [
+            "touch kirby3-fingerprint.zip",
             "rm kirby3-fingerprint.zip",
             "composer install --no-dev",
             "composer remove getkirby/cms",

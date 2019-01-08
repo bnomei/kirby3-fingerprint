@@ -64,7 +64,7 @@ class Fingerprint
             kirby()->cache('bnomei.fingerprint')->flush();
         }
 
-        $cacheWithVersion = 'lookup' . str_replace('.','', kirby()->plugin('bnomei/fingerprint')->version());
+        $cacheWithVersion = 'lookup' . str_replace('.','', kirby()->plugin('bnomei/fingerprint')->version()) . '-' . md5(site()->url());
         $lookup = kirby()->cache('bnomei.fingerprint')->get($cacheWithVersion);
         if (!$lookup) {
             $lookup = [];
