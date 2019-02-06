@@ -64,7 +64,7 @@ class Fingerprint
             kirby()->cache('bnomei.fingerprint')->flush();
         }
 
-        $cacheWithVersion = 'lookup' . str_replace('.','', kirby()->plugin('bnomei/fingerprint')->version()) . '-' . md5(site()->url());
+        $cacheWithVersion = 'lookup' . str_replace('.', '', kirby()->plugin('bnomei/fingerprint')->version()) . '-' . md5(site()->url());
         $lookup = kirby()->cache('bnomei.fingerprint')->get($cacheWithVersion);
         if (!$lookup) {
             $lookup = [];
@@ -145,12 +145,13 @@ class Fingerprint
         return null;
     }
 
-    private static function ssl($url) {
+    private static function ssl($url)
+    {
         $callback = option('bnomei.fingerprint.ssl', null);
         if ($callback && is_callable($callback)) {
             $callback = $callback();
         }
-        if($callback) {
+        if ($callback) {
             $url = str_replace('http://', 'https://', $url);
         }
         return $url;
