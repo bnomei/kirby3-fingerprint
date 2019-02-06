@@ -60,7 +60,7 @@ class Fingerprint
         $sri = null;
         $url = null;
 
-        if (static::isLocalhost() || static::isWebpack()) {
+        if (option('debug') && option('bnomei.fingerprint.debugforce')) {
             kirby()->cache('bnomei.fingerprint')->flush();
         }
 
@@ -70,7 +70,7 @@ class Fingerprint
             $lookup = [];
             $needsPush = true;
         }
-        if (is_a($file, 'Kirby\CMS\File')) {
+        if (is_a($file, 'Kirby\CMS\File') || is_a($file, 'Kirby\CMS\FileVersion')) {
             $key = (string)$file->id();
             $root = (string)$file->root();
             $mod = \filemtime($root);
@@ -101,28 +101,14 @@ class Fingerprint
                 'integrity' => null,
                 'hash' => $url,
             ];
-            if (!static::isLocalhost() && !static::isWebpack()) {
-                $lookup[$key]['integrity'] = static::sriFile($file);
-                $lookup[$key]['hash'] = static::hashFile($file);
-            }
+
+            $lookup[$key]['integrity'] = static::sriFile($file);
+            $lookup[$key]['hash'] = static::hashFile($file);
             
             kirby()->cache('bnomei.fingerprint')->set($cacheWithVersion, $lookup);
         }
 
         return \Kirby\Toolkit\A::get($lookup, $key);
-    }
-
-    private static function isWebpack()
-    {
-        return !!(
-            isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-            && $_SERVER['HTTP_X_FORWARDED_FOR'] == 'webpack'
-        );
-    }
-
-    private static function isLocalhost()
-    {
-        return in_array($_SERVER['REMOTE_ADDR'], array( '127.0.0.1', '::1' ));
     }
 
     private static function hashFile($file)

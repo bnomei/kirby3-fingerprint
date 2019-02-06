@@ -64,6 +64,9 @@ echo Bnomei\Fingerprint::js(
 
 ## Settings
 
+**debugforce**
+- default: `true` will flush cache if debug mode is active
+
 **hash**
 - default: will lead to query string and does not require htaccess setup. thanks @fabianmichael. [#1](https://github.com/bnomei/kirby3-fingerprint/issues/1)
 

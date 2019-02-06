@@ -5,12 +5,13 @@
 Kirby::plugin('bnomei/fingerprint', [
     'options' => [
       'cache' => true,
+      'debugforce' => true,
       'ssl' => function () {
           return false;
       },
       'hash' => function ($file) {
           $url = null;
-          $fileroot = is_a($file, 'Kirby\Cms\File') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
+          $fileroot = is_a($file, 'Kirby\Cms\File') || is_a($file, 'Kirby\Cms\FileVersion') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
   
           if (\Kirby\Toolkit\F::exists($fileroot)) {
               $filename = implode('.', [
@@ -18,7 +19,7 @@ Kirby::plugin('bnomei/fingerprint', [
                   \Kirby\Toolkit\F::extension($fileroot) . '?v=' . \filemtime($fileroot)
               ]);
   
-              if (is_a($file, 'Kirby\Cms\File')) {
+              if (is_a($file, 'Kirby\Cms\File') || is_a($file, 'Kirby\Cms\FileVersion')) {
                   $url = str_replace($file->filename(), $filename, $file->url());
               } else {
                   $dirname = str_replace(kirby()->roots()->index(), '', \dirname($fileroot));
@@ -31,7 +32,7 @@ Kirby::plugin('bnomei/fingerprint', [
       },
       'integrity' => function ($file) {
           $sri = null;
-          $file = is_a($file, 'Kirby\Cms\File') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
+          $file = is_a($file, 'Kirby\Cms\File')  || is_a($file, 'Kirby\Cms\FileVersion') ? $file->root() : kirby()->roots()->index() . DIRECTORY_SEPARATOR . ltrim(str_replace(kirby()->site()->url(), '', $file), '/');
   
           if (!\Kirby\Toolkit\F::exists($file)) {
               return null;
