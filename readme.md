@@ -86,6 +86,10 @@ This plugin is provided "as is" with no guarantee. Use it at your own risk and a
 
 It is discouraged to use this plugin in any project that promotes racism, sexism, homophobia, animal abuse, violence or any other form of hate speech.
 
+## Similar Plugins
+
+- consider [kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint) if you do not want a querystring (`myfile.js?v=1928356`) but an filename rewrite rule using htaccess (`myfile.1928356.js`) and you do not want to override the `bnomei.fingerprint.hash` option like [described here](https://github.com/bnomei/kirby3-fingerprint/issues/1#issuecomment-470867793).
+
 ## Credits
 
 - based on [@iksi](https://github.com/iksi) https://github.com/iksi/kirby-fingerprint (Kirby V2)
