@@ -88,4 +88,5 @@ It is discouraged to use this plugin in any project that promotes racism, sexism
 
 ## Credits
 
-based on [@iksi](https://github.com/iksi) https://github.com/iksi/kirby-fingerprint (Kirby V2)
+- based on [@iksi](https://github.com/iksi) https://github.com/iksi/kirby-fingerprint (Kirby V2)
+- [@S1SYPHOS](https://github.com/S1SYPHOS) https://github.com/S1SYPHOS/kirby-sri (Kirby V2)
