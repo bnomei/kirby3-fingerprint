@@ -3,52 +3,61 @@
 namespace Bnomei;
 
 use \Kirby\Cms;
+use Kirby\Cms\Url;
 use \Kirby\Toolkit;
+use Kirby\Toolkit\A;
+use Kirby\Toolkit\F;
+use Kirby\Toolkit\V;
+use function array_key_exists;
+use function css;
+use function filemtime;
+use function js;
+use function url;
 
 class Fingerprint
 {
     public static function css($url, $attrs = [])
     {
         if ($url === '@auto') {
-            if ($assetUrl = \Kirby\Cms\Url::toTemplateAsset('css/templates', 'css')) {
+            if ($assetUrl = Url::toTemplateAsset('css/templates', 'css')) {
                 $url = $assetUrl;
             }
         }
         $fingerprint = static::process($url);
-        $sri = \Kirby\Toolkit\A::get($attrs, 'integrity', false);
+        $sri = A::get($attrs, 'integrity', false);
         if ($sri === true) {
             $sri = $fingerprint['integrity'];
         }
         if ($sri && strlen($sri) > 0) {
             $attrs['integrity'] = $sri;
-            $attrs['crossorigin'] = \Kirby\Toolkit\A::get($attrs, 'crossorigin', 'anonymous');
-        } elseif (\Kirby\Toolkit\A::get($attrs, 'integrity')) {
+            $attrs['crossorigin'] = A::get($attrs, 'crossorigin', 'anonymous');
+        } elseif (A::get($attrs, 'integrity')) {
             unset($attrs[array_search('integrity', $attrs)]);
         }
 
-        return static::ssl(\css($fingerprint['hash'], $attrs));
+        return static::ssl(css($fingerprint['hash'], $attrs));
     }
 
     public static function js($url, $attrs = [])
     {
         if ($url === '@auto') {
-            if ($assetUrl = \Kirby\Cms\Url::toTemplateAsset('js/templates', 'js')) {
+            if ($assetUrl = Url::toTemplateAsset('js/templates', 'js')) {
                 $url = $assetUrl;
             }
         }
         $fingerprint = static::process($url);
-        $sri = \Kirby\Toolkit\A::get($attrs, 'integrity', false);
+        $sri = A::get($attrs, 'integrity', false);
         if ($sri === true) {
             $sri = $fingerprint['integrity'];
         }
         if ($sri && strlen($sri) > 0) {
             $attrs['integrity'] = $sri;
-            $attrs['crossorigin'] = \Kirby\Toolkit\A::get($attrs, 'crossorigin', 'anonymous');
-        } elseif (\Kirby\Toolkit\A::get($attrs, 'integrity')) {
+            $attrs['crossorigin'] = A::get($attrs, 'crossorigin', 'anonymous');
+        } elseif (A::get($attrs, 'integrity')) {
             unset($attrs[array_search('integrity', $attrs)]);
         }
 
-        return static::ssl(\js($fingerprint['hash'], $attrs));
+        return static::ssl(js($fingerprint['hash'], $attrs));
     }
 
     public static function process($file)
@@ -73,20 +82,20 @@ class Fingerprint
         if (is_a($file, 'Kirby\CMS\File') || is_a($file, 'Kirby\CMS\FileVersion')) {
             $key = (string)$file->id();
             $root = (string)$file->root();
-            $mod = \filemtime($root);
+            $mod = filemtime($root);
             $url = static::ssl((string)$file->url());
-        } elseif (!\Kirby\Toolkit\V::url($file)) {
+        } elseif (!V::url($file)) {
             $key = ltrim($file, '/');
             $root = kirby()->roots()->index() . DIRECTORY_SEPARATOR . $key;
-            if (\Kirby\Toolkit\F::exists($root)) {
-                $mod = \filemtime($root);
-                $url = static::ssl(\url($key));
+            if (F::exists($root)) {
+                $mod = filemtime($root);
+                $url = static::ssl(url($key));
             }
         } else {
             $key = $file;
         }
 
-        if (\array_key_exists($key, $lookup)) {
+        if (array_key_exists($key, $lookup)) {
             if ($mod && $lookup[$key]['modified'] < $mod) {
                 $needsPush = true;
             }
@@ -104,11 +113,11 @@ class Fingerprint
 
             $lookup[$key]['integrity'] = static::sriFile($file);
             $lookup[$key]['hash'] = static::hashFile($file);
-            
+
             kirby()->cache('bnomei.fingerprint')->set($cacheWithVersion, $lookup);
         }
 
-        return \Kirby\Toolkit\A::get($lookup, $key);
+        return A::get($lookup, $key);
     }
 
     private static function hashFile($file)
