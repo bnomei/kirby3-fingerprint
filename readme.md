@@ -1,6 +1,14 @@
 # Kirby 3 Fingerprint
 
-![GitHub release](https://img.shields.io/github/release/bnomei/kirby3-fingerprint.svg?maxAge=1800) ![License](https://img.shields.io/github/license/mashape/apistatus.svg) ![Kirby Version](https://img.shields.io/badge/Kirby-3-black.svg) ![Kirby 3 Pluginkit](https://img.shields.io/badge/Pluginkit-YES-cca000.svg)  [![Build Status](https://travis-ci.com/bnomei/kirby3fingerprint.svg?branch=master)](https://travis-ci.com/bnomei/kirby3fingerprint) [![Coverage Status](https://coveralls.io/repos/github/bnomei/kirby3fingerprint/badge.svg?branch=master)](https://coveralls.io/github/bnomei/kirby3fingerprint?branch=master) [![Gitter](https://badges.gitter.im/bnomei-kirby-3-plugins/community.svg)](https://gitter.im/bnomei-kirby-3-plugins/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![Release](https://flat.badgen.net/packagist/v/bnomei/kirby3-fingerprint?color=ae81ff)
+![Stars](https://flat.badgen.net/packagist/ghs/bnomei/kirby3-fingerprint?color=272822)
+![Downloads](https://flat.badgen.net/packagist/dt/bnomei/kirby3-fingerprint?color=272822)
+![Issues](https://flat.badgen.net/packagist/ghi/bnomei/kirby3-fingerprint?color=e6db74)
+[![Build Status](https://flat.badgen.net/travis/bnomei/kirby3-fingerprint)](https://travis-ci.com/bnomei/kirby3-fingerprint)
+[![Coverage Status](https://flat.badgen.net/coveralls/c/github/bnomei/kirby3-fingerprint)](https://coveralls.io/github/bnomei/kirby3-fingerprint) 
+[![Demo](https://flat.badgen.net/badge/website/examples?color=f92672)](https://kirby3-plugins.bnomei.com/fingerprint) 
+[![Gitter](https://flat.badgen.net/badge/gitter/chat?color=982ab3)](https://gitter.im/bnomei-kirby-3-plugins/community) 
+[![Twitter](https://flat.badgen.net/badge/twitter/bnomei?color=66d9ef)](https://twitter.com/bnomei)
 
 
 File Method and css/js helper to add cachbusting hash and optional [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) to files.
