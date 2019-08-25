@@ -73,17 +73,12 @@ echo Bnomei\Fingerprint::js(
 
 ## Settings
 
-**debugforce**
-- default: `true` will flush cache if debug mode is active
-
-**hash**
-- default: will lead to query string and does not require htaccess setup. thanks @fabianmichael. [#1](https://github.com/bnomei/kirby3-fingerprint/issues/1)
-
-**integrity**
-- to disable sri set option `'integrity' => null,`
-
-**ssl**
-- default: `false`. boolean value or callback to force *https* scheme.
+| bnomei.handlebars.        | Default        | Description               |            
+|---------------------------|----------------|---------------------------|
+| debugforce | `true` | will flush cache if debug mode is active
+| hash | `callback` | will lead to query string and does not require htaccess setup. thanks @fabianmichael. [#1](https://github.com/bnomei/kirby3-fingerprint/issues/1) |
+| integrity | `callback` | use it to set option `'integrity' => null,` |
+| ssl | `callback => false` |  boolean value or callback to force *https* scheme. |
 
 ## Disclaimer
 
