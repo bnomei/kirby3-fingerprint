@@ -30,6 +30,7 @@ class ComposerStaticInit05edc69d083a3b02189534444c1da243
 
     public static $classMap = array (
         'Bnomei\\Fingerprint' => __DIR__ . '/../..' . '/classes/Fingerprint.php',
+        'Bnomei\\FingerprintFile' => __DIR__ . '/../..' . '/classes/FingerprintFile.php',
         'Kirby\\ComposerInstaller\\CmsInstaller' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/CmsInstaller.php',
         'Kirby\\ComposerInstaller\\Installer' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Installer.php',
         'Kirby\\ComposerInstaller\\Plugin' => __DIR__ . '/..' . '/getkirby/composer-installer/src/ComposerInstaller/Plugin.php',

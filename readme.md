@@ -20,15 +20,18 @@ This plugin is free but if you use it in a commercial project please consider to
 - [buy me ☕](https://buymeacoff.ee/bnomei) or
 - [buy a Kirby license using this affiliate link](https://a.paddle.com/v2/click/1129/35731?link=1170)
 
+## Similar Plugins
+
+Both of the following plugins can do cachebusting but they do not cache the modified timestamp nor can they do SRI nor do cachebusting for non js/css files.
+
+- [bvdputte/kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint)
+- [schnti/kirby3-cachebuster](https://github.com/schnti/kirby3-cachebuster)
+
 ## Installation
 
 - unzip [master.zip](https://github.com/bnomei/kirby3-fingerprint/archive/master.zip) as folder `site/plugins/kirby3-fingerprint` or
 - `git submodule add https://github.com/bnomei/kirby3-fingerprint.git site/plugins/kirby3-fingerprint` or
 - `composer require bnomei/kirby3-fingerprint`
-
-## Performance
-
-Hash and SRI values are cached and only updated when original file is modified.
 
 ## Usage
 
@@ -73,12 +76,36 @@ echo Bnomei\Fingerprint::js(
 
 ## Settings
 
-| bnomei.handlebars.        | Default        | Description               |            
+| bnomei.fingerprint.       | Default        | Description               |            
 |---------------------------|----------------|---------------------------|
-| debugforce | `true` | will flush cache if debug mode is active
 | hash | `callback` | will lead to query string and does not require htaccess setup. thanks @fabianmichael. [#1](https://github.com/bnomei/kirby3-fingerprint/issues/1) |
 | integrity | `callback` | use it to set option `'integrity' => null,` |
-| ssl | `callback => false` |  boolean value or callback to force *https* scheme. |
+| https | `true` |  boolean value or callback to force *https* scheme. |
+| query | `true` | `myfile.js?v={HASH}` else `myfile.{HASH}.js` |
+
+### Query option disabled
+
+If you disable the query option you also also need to add apache or nginx rules. These rules will redirect css and js files from with hash to the asset on disk.
+
+**.htaccess** – put this directly after the `RewriteBase` statment
+```apacheconfig
+# RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)\.([0-9a-z]{32})\.(js|css)$ $1.$3 [L]
+```
+
+**Nginx virtual host setup**
+```
+location ~ (.+)\.(?:\d+)\.(js|css)$ {
+    try_files $uri $1.$2;
+}
+```
+
+## Cache & Performance
+
+The plugin will flush its cache and do not write any more caches if **global** debug mode is `true`.
+
+Hash and SRI values are cached and only updated when original file is modified. If you also have the [AutoID Plugin](https://github.com/bnomei/kirby3-autoid) and the file has an autoid field the modified lookup will be at almost zero-cpu cost.
 
 ## Disclaimer
 
@@ -89,10 +116,6 @@ This plugin is provided "as is" with no guarantee. Use it at your own risk and a
 [MIT](https://opensource.org/licenses/MIT)
 
 It is discouraged to use this plugin in any project that promotes racism, sexism, homophobia, animal abuse, violence or any other form of hate speech.
-
-## Similar Plugins
-
-- consider [kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint) if you do not want a querystring (`myfile.js?v=1928356`) but an filename rewrite rule using htaccess (`myfile.1928356.js`) and you do not want to override the `bnomei.fingerprint.hash` option like [described here](https://github.com/bnomei/kirby3-fingerprint/issues/1#issuecomment-470867793).
 
 ## Credits
 
