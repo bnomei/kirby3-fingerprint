@@ -78,7 +78,7 @@ echo Bnomei\Fingerprint::js(
 
 | bnomei.fingerprint.       | Default        | Description               |            
 |---------------------------|----------------|---------------------------|
-| hash | `callback` | will lead to query string and does not require htaccess setup. thanks @fabianmichael. [#1](https://github.com/bnomei/kirby3-fingerprint/issues/1) |
+| hash | `callback` | will lead to the hashing logic |
 | integrity | `callback` | use it to set option `'integrity' => null,` |
 | https | `true` |  boolean value or callback to force *https* scheme. |
 | query | `true` | `myfile.js?v={HASH}` else `myfile.{HASH}.js` |
