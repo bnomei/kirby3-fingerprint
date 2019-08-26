@@ -53,5 +53,9 @@
   },
   "extra": {
     "kirby-cms-path": "tests/kirby"
+  },
+  "suggest": {
+    "bnomei/kirby3-autoid": "Get modification timestamp for kirby files (not css/js) at almost zero-cpu-cost",
+    "bnomei/kirby3-security-headers": "Let's make the web a saver place – sensible defaults included."
   }
 }
