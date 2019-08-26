@@ -42,8 +42,10 @@ final class FingerprintTest extends TestCase
     {
         $fipr = new Fingerprint([
             'https' => false,
+            'debug' => function() { return false; },
         ]);
         $this->assertFalse($fipr->option('https'));
+        $this->assertFalse($fipr->option('debug'));
         $this->assertIsArray($fipr->option());
     }
 
