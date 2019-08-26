@@ -35,6 +35,8 @@ Both of the following plugins can do cachebusting but they do not cache the modi
 
 ## Usage
 
+> This Plugin does **not** override the build in js/css helpers. Use `Bnomei\Fingerprint::css` and `Bnomei\Fingerprint::js` when you need them.
+
 ```php
 echo Bnomei\Fingerprint::css('/assets/css/index.css');
 // https://../assets/css/index.css?v=1203291283
