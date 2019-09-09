@@ -107,6 +107,16 @@ final class FingerprintTest extends TestCase
         $this->assertNull($fipr->read($this->testFile));
         $lookup = $fipr->process($this->testFile);
         $this->assertNull($fipr->read($this->testFile));
+
+        $this->assertRegExp(
+            '/\/assets\/css\/main\.css\?v=\d{10}/',
+            $fipr->process('/assets/css/main.css')['hash']
+        );
+
+        $this->assertRegExp(
+            '/\/assets\/js\/main\.js\?v=\d{10}/',
+            $fipr->process('/assets/js/main.js')['hash']
+        );
     }
 
     public function testAttrs()
