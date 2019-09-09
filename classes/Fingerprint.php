@@ -64,7 +64,11 @@ final class Fingerprint
         $callback = $this->option($option);
 
         if ($callback && is_callable($callback)) {
-            return call_user_func_array($callback, [$file]);
+            if ($option === 'integrity') {
+                return call_user_func_array($callback, [$file]);
+            } elseif ($option === 'hash') {
+                return call_user_func_array($callback, [$file, $this->option('query')]);
+            }
         }
         return null;
     }

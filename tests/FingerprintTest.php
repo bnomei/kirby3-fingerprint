@@ -204,4 +204,21 @@ final class FingerprintTest extends TestCase
             Fingerprint::js('@auto')
         );
     }
+
+    public function testRedirectRulesInsteadOfQuery()
+    {
+        $fipr = new Fingerprint([
+            'query' => false,
+        ]);
+
+        $this->assertRegExp(
+            '/\/assets\/css\/main\.[a-z0-9]{32}\.css/',
+            $fipr->process('/assets/css/main.css')['hash']
+        );
+
+        $this->assertRegExp(
+            '/\/assets\/js\/main\.[a-z0-9]{32}\.js/',
+            $fipr->process('/assets/js/main.js')['hash']
+        );
+    }
 }
