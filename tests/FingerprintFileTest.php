@@ -114,6 +114,12 @@ class FingerprintFileTest extends TestCase
 
         $file = new FingerprintFile($this->invalidPath);
         $this->assertEquals($file->file(), $file->hash());
+
+        $file = new FingerprintFile('assets/css/main.css');
+        $this->assertRegExp('/^.*\/main\.css\?v=\d{10}$/', $file->hash());
+
+        $file = new FingerprintFile('assets/js/main.js');
+        $this->assertRegExp('/^.*\/main\.js\?v=\d{10}$/', $file->hash());
     }
 
     public function testIntegrity()

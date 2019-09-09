@@ -157,7 +157,17 @@ final class FingerprintTest extends TestCase
         );
 
         $this->assertRegExp(
-            '/\/assets\/css\/templates\/default.css\?v=\d{10}/',
+            '/\/assets\/css\/main\.css\?v=\d{10}/',
+            Fingerprint::css('assets/css/main.css')
+        );
+
+        $this->assertRegExp(
+            '/\/assets\/css\/main\.css\?v=\d{10}/',
+            Fingerprint::css('/assets/css/main.css')
+        );
+
+        $this->assertRegExp(
+            '/\/assets\/css\/templates\/default\.css\?v=\d{10}/',
             Fingerprint::css('@auto')
         );
     }
@@ -170,7 +180,17 @@ final class FingerprintTest extends TestCase
         );
 
         $this->assertRegExp(
-            '/\/assets\/js\/templates\/default.js\?v=\d{10}/',
+            '/\/assets\/js\/main\.js\?v=\d{10}/',
+            Fingerprint::js('assets/js/main.js')
+        );
+
+        $this->assertRegExp(
+            '/\/assets\/js\/main\.js\?v=\d{10}/',
+            Fingerprint::js('/assets/js/main.js')
+        );
+
+        $this->assertRegExp(
+            '/\/assets\/js\/templates\/default\.js\?v=\d{10}/',
             Fingerprint::js('@auto')
         );
     }
