@@ -84,9 +84,18 @@ echo Bnomei\Fingerprint::js(
 | hash | `callback` | will lead to the hashing logic |
 | integrity | `callback` | use it to set option `'integrity' => null,` |
 | https | `true` |  boolean value or callback to force *https* scheme. |
-| query | `true` | `myfile.js?v={HASH}` else `myfile.{HASH}.js` |
+| query | `true`|`string` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file |
 
-### Query option disabled
+
+### Query option: true (default)
+
+```
+myfile.js?v={HASH}
+```
+
+This is the default since it works without additional changes to your server but be aware that [query strings are not perfect](http://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/).
+
+### Query option: false
 
 If you disable the query option you also also need to add apache or nginx rules. These rules will redirect css and js files from with hash to the asset on disk.
 
@@ -103,6 +112,10 @@ location ~ (.+)\.(?:\d+)\.(js|css)$ {
     try_files $uri $1.$2;
 }
 ```
+
+### Query option: string
+
+You can also forward the path of a json encoded manifest file and the plugin will load whatever hash is defined there. This works great for [gulp-rev](https://github.com/sindresorhus/gulp-rev) or with [laravel mix versioning](https://laravel-mix.com/docs/master/versioning).
 
 ## Cache & Performance
 

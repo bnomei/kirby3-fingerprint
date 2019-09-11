@@ -7,7 +7,7 @@ Kirby::plugin('bnomei/fingerprint', [
         'cache' => true,
         'query' => true,
         'https' => true,
-        'hash' => function ($file, bool $query = true) {
+        'hash' => function ($file, $query = true) {
             return (new \Bnomei\FingerprintFile($file))->hash($query);
         },
         'integrity' => function ($file) {

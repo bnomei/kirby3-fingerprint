@@ -1,7 +1,7 @@
 {
   "name": "bnomei/kirby3-fingerprint",
   "type": "kirby-plugin",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "File Method and css/js helper to add cachebusting hash and optional Subresource Integrity to file",
   "license": "MIT",
   "authors": [
@@ -17,7 +17,11 @@
     "fingerprint",
     "hash",
     "cache-buster",
-    "subresource-integrity"
+    "subresource-integrity",
+    "manifest",
+    "manifest-file",
+    "json",
+    "assets"
   ],
   "autoload": {
     "psr-4": {
@@ -56,6 +60,7 @@
   },
   "suggest": {
     "bnomei/kirby3-autoid": "Get modification timestamp for kirby files (not css/js) at almost zero-cpu-cost",
-    "bnomei/kirby3-security-headers": "Let's make the web a saver place – sensible defaults included."
+    "bnomei/kirby3-security-headers": "Let's make the web a saver place – sensible defaults included.",
+    "diverently/laravel-mix-kirby": "Consider using this plugin instead if all your assets are versioned by laravel mix."
   }
 }

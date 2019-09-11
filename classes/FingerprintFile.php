@@ -6,6 +6,7 @@ namespace Bnomei;
 
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Http\Url;
+use Kirby\Toolkit\A;
 use Kirby\Toolkit\F;
 use function dirname;
 use function filemtime;
@@ -33,7 +34,7 @@ final class FingerprintFile
     {
         $this->file = $file;
         $this->isKirbyFile = is_a($file, 'Kirby\Cms\File') || is_a($file, 'Kirby\Cms\FileVersion');
-        if (! $this->isKirbyFile) {
+        if (!$this->isKirbyFile) {
             $this->file = url($this->file);
         }
     }
@@ -71,10 +72,10 @@ final class FingerprintFile
     }
 
     /**
-     * @param bool $query
+     * @param $query
      * @return string
      */
-    public function hash(bool $query = true): string
+    public function hash($query = true): string
     {
         $root = $this->fileRoot();
 
@@ -82,11 +83,25 @@ final class FingerprintFile
             return url($this->file);
         }
 
-        $filename = implode('.', [
-            F::name($root),
-            $query ? F::extension($root) . '?v=' . filemtime($root) : md5_file($root) .  '.' . F::extension($root)
-        ]);
 
+        $filename = null;
+        if (is_string($query) && F::exists($query)) {
+            $manifest = json_decode(F::read($query), true);
+            if (is_array($manifest)) {
+                $filename = basename(A::get(
+                    $manifest,
+                    $this->id(),
+                    $root
+                ));
+            }
+        } elseif (is_bool($query)) {
+            $filename = implode('.', [
+                F::name($root),
+                $query ? F::extension($root) . '?v=' . filemtime($root) : md5_file($root) . '.' . F::extension($root)
+            ]);
+        }
+
+        $url = null;
         if ($this->isKirbyFile) {
             $url = str_replace($this->file->filename(), $filename, $this->file->url());
         } else {
