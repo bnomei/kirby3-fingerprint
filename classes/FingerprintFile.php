@@ -148,10 +148,8 @@ final class FingerprintFile
         if ($this->isKirbyFile) {
             return $this->file->root();
         }
-        $uri = ltrim(
-            str_replace(kirby()->site()->url(), '', $this->file),
-            DIRECTORY_SEPARATOR
-        );
+        $path = ltrim(kirby()->site()->url(), DIRECTORY_SEPARATOR);
+        $uri = ltrim(str_replace($path, '', $this->file), DIRECTORY_SEPARATOR);
         return kirby()->roots()->index() . DIRECTORY_SEPARATOR . $uri;
     }
 

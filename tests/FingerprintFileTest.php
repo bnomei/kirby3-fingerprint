@@ -94,6 +94,12 @@ class FingerprintFileTest extends TestCase
             $file->fileRoot()
         );
 
+        $file = new FingerprintFile(DIRECTORY_SEPARATOR . $this->assetPath);
+        $this->assertEquals(
+            kirby()->roots()->index() . DIRECTORY_SEPARATOR . $this->assetPath,
+            $file->fileRoot()
+        );
+
         $file = new FingerprintFile($this->invalidPath);
         $this->assertEquals(
             kirby()->roots()->index() . DIRECTORY_SEPARATOR . $this->invalidPath,
