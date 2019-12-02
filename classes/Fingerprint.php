@@ -213,7 +213,7 @@ final class Fingerprint
      * @param array $attrs
      * @return mixed
      */
-    public static function css($url, $attrs = [])
+    public static function css($url, $attrs = []): string
     {
         return (new Fingerprint())->helper('css', $url, $attrs);
     }
@@ -223,8 +223,20 @@ final class Fingerprint
      * @param array $attrs
      * @return mixed
      */
-    public static function js($url, $attrs = [])
+    public static function js($url, $attrs = []): string
     {
         return (new Fingerprint())->helper('js', $url, $attrs);
+    }
+
+    /**
+     * @param $url
+     * @param array $attrs
+     * @return mixed
+     */
+    public static function url($url): string
+    {
+        $fingerprint = new Fingerprint();
+        $url = $fingerprint->process($url)['hash'];
+        return $fingerprint->https($url);
     }
 }

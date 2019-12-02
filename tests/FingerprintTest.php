@@ -159,6 +159,14 @@ final class FingerprintTest extends TestCase
         $this->assertNull($fipr->helper('nope', '@auto'));
     }
 
+    public function testStaticUrl()
+    {
+        $this->assertRegExp(
+            '/\/assets\/css\/main\.css\?v=\d{10}$/',
+            Fingerprint::url('assets/css/main.css')
+        );
+    }
+
     public function testStaticCss()
     {
         $this->assertEquals(

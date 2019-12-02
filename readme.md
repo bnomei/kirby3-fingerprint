@@ -40,10 +40,13 @@ Both of the following plugins can do cachebusting but they do not cache the modi
 
 ```php
 echo Bnomei\Fingerprint::css('/assets/css/index.css');
-// https://../assets/css/index.css?v=1203291283
+// <style> element with https://../assets/css/index.css?v=1203291283
 
 echo Bnomei\Fingerprint::js('/assets/js/index.min.js');
-// https://../assets/js/index.min.js?v=1203291283
+// <link> element https://../assets/js/index.min.js?v=1203291283
+
+echo Bnomei\Fingerprint::url('/assets/css/index.css');
+// raw url https://../assets/css/index.css?v=1203291283
 
 echo $page->file('ukulele.pdf')->fingerprint();
 // https://../ukulele.pdf?v=1203291283
