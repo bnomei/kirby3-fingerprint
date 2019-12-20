@@ -61,14 +61,19 @@ final class FingerprintFile
             return null;
         }
 
-        if ($this->isKirbyFile && function_exists('autoid') && $this->file->autoid()->isNotEmpty()) {
+        $modified = null;
+        if ($this->isKirbyFile && function_exists('modified') && $this->file->autoid()->isNotEmpty()) {
             // @codeCoverageIgnoreStart
-            $autoid = autoid()->filterBy('autoid', $this->file->autoid())->first();
-            return $autoid && is_array($autoid) ? A::get($autoid, 'modified') : F::modified($root);
+            $modified = modified($this->file->autoid()->value());
+            if (!$modified) {
+                $modified = $this->file->modified();
+            }
             // @codeCoverageIgnoreEnd
+        } else {
+            $modified = F::modified($root);
         }
 
-        return F::modified($root);
+        return $modified;
     }
 
     /**
