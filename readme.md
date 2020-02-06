@@ -27,6 +27,7 @@ Both of the following plugins can do cachebusting but they do not cache the modi
 
 - [bvdputte/kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint)
 - [schnti/kirby3-cachebuster](https://github.com/schnti/kirby3-cachebuster)
+- [diverently/laravel-mix-kirby](https://github.com/diverently/laravel-mix-kirby)
 
 ## Installation
 
