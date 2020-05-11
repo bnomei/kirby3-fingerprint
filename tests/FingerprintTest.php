@@ -229,4 +229,18 @@ final class FingerprintTest extends TestCase
             $fipr->process('/assets/js/main.js')['hash']
         );
     }
+
+    public function testManifestInsteadOfQuery()
+    {
+        $fipr = new Fingerprint([
+            'query' => function() {
+                return __DIR__ . '/manifest.json';
+            },
+        ]);
+
+        $this->assertRegExp(
+            '/\/assets\/css\/main\.1234567890\.css/',
+            $fipr->process('/assets/css/main.css')['hash']
+        );
+    }
 }

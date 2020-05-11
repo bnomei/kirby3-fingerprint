@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Bnomei;
 
 use Kirby\Exception\InvalidArgumentException;
-use Kirby\Http\Url;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\F;
 use function dirname;
@@ -88,14 +87,18 @@ final class FingerprintFile
             return url($this->file);
         }
 
-
         $filename = null;
         if (is_string($query) && F::exists($query)) {
             $manifest = json_decode(F::read($query), true);
             if (is_array($manifest)) {
+                $url = '';
+                if (kirby()->language()) {
+                    $url = preg_replace('/\/'. kirby()->language()->code() .'$/', '', kirby()->site()->url());
+                }
+                $url = str_replace($url, '', $this->id());
                 $filename = basename(A::get(
                     $manifest,
-                    $this->id(),
+                    $url,
                     $root
                 ));
             }
@@ -155,7 +158,7 @@ final class FingerprintFile
         }
         $url = kirby()->site()->url();
         if (kirby()->language()) {
-            $url = rtrim($url, '/' . kirby()->language()->code());
+            $url = preg_replace('/\/'. kirby()->language()->code() .'$/', '', $url);
         }
         $path = ltrim($url, DIRECTORY_SEPARATOR);
         $uri = ltrim(str_replace($path, '', $this->file), DIRECTORY_SEPARATOR);
