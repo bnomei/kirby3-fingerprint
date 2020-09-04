@@ -108,7 +108,7 @@ RewriteRule ^(.+)\.([0-9a-z]{10})\.(js|css)$ $1.$3 [L]
 
 **Nginx virtual host setup**
 ```
-location ~ (.+)\.(?:\d+)\.(js|css)$ {
+location ~ (.+)\.(?:[0-9,a-z]+)\.(js|css)$ {
     try_files $uri $1.$2;
 }
 ```
