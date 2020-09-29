@@ -132,18 +132,20 @@ final class FingerprintFile
             return null;
         }
 
-        if ($openssl && extension_loaded('openssl')) {
-            // https://www.srihash.org/
-            exec('openssl dgst -sha384 -binary ' . $root . ' | openssl base64 -A', $output, $return);
+        try {
+            if ($openssl && extension_loaded('openssl')) {
+                // https://www.srihash.org/
+                exec('openssl dgst -sha384 -binary ' . $root . ' | openssl base64 -A', $output, $return);
+                if (is_array($output) && count($output) >= 1) {
+                    return 'sha384-' . $output[0];
+                }
+            }
+
+            exec('shasum -b -a 384 ' . $root . ' | xxd -r -p | base64', $output, $return);
             if (is_array($output) && count($output) >= 1) {
                 return 'sha384-' . $output[0];
             }
-        }
-
-        exec('shasum -b -a 384 ' . $root . ' | xxd -r -p | base64', $output, $return);
-        if (is_array($output) && count($output) >= 1) {
-            return 'sha384-' . $output[0];
-        }
+        } catch (\Exception $ex) {}
 
         return null; // @codeCoverageIgnore
     }
