@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bnomei;
 
+use Exception;
 use Kirby\Cms\Url;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Toolkit\A;
