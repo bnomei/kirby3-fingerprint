@@ -39,8 +39,7 @@
   "require-dev": {
     "phpunit/phpunit": "^8.3",
     "getkirby/cms": "^3.2",
-    "php-coveralls/php-coveralls": "^2.1",
-    "nunomaduro/phpinsights": "^1.8"
+    "php-coveralls/php-coveralls": "^2.1"
   },
   "scripts": {
     "analyze": "phpstan analyse classes",
