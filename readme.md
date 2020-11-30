@@ -103,7 +103,7 @@ If you disable the query option you also also need to add apache or nginx rules.
 ```apacheconfig
 # RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.+)\.([0-9a-z]{10})\.(js|css)$ $1.$3 [L]
+RewriteRule ^(.+)\.([0-9a-z]{32})\.(js|css)$ $1.$3 [L]
 ```
 
 **Nginx virtual host setup**
