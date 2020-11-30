@@ -38,7 +38,11 @@ final class Fingerprint
         }
 
         if ($this->option('debug')) {
-            kirby()->cache('bnomei.fingerprint')->flush();
+            try {
+                kirby()->cache('bnomei.fingerprint')->flush();
+            } catch (Exception $e) {
+                //
+            }
         }
     }
 
