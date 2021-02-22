@@ -1,7 +1,7 @@
 {
   "name": "bnomei/kirby3-fingerprint",
   "type": "kirby-plugin",
-  "version": "3.0.11",
+  "version": "3.0.12",
   "description": "File Method and css/js helper to add cachebusting hash and optional Subresource Integrity to file",
   "license": "MIT",
   "authors": [
