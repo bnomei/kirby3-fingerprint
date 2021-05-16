@@ -161,7 +161,7 @@ final class Fingerprint
      */
     public function helper(string $extension, string $url, array $attrs = []): ?string
     {
-        if(! is_callable($extension)) {
+        if (! is_callable($extension)) {
             return null;
         }
 

@@ -110,41 +110,41 @@ class FingerprintFileTest extends TestCase
     public function testHash()
     {
         $file = new FingerprintFile($this->testFile);
-        $this->assertRegExp('/^.*\/test\.png\?v=\d{10}$/', $file->hash());
+        $this->assertMatchesRegularExpression('/^.*\/test\.png\?v=\d{10}$/', $file->hash());
 
         $file = new FingerprintFile($this->assetPath);
-        $this->assertRegExp('/^\/assets\/asset\.png\?v=\d{10}$/', $file->hash());
+        $this->assertMatchesRegularExpression('/^\/assets\/asset\.png\?v=\d{10}$/', $file->hash());
 
         $file = new FingerprintFile($this->assetPath);
-        $this->assertRegExp('/^\/assets\/asset\.\w{32}\.png$/', $file->hash(false));
+        $this->assertMatchesRegularExpression('/^\/assets\/asset\.\w{32}\.png$/', $file->hash(false));
 
         $file = new FingerprintFile($this->invalidPath);
         $this->assertEquals($file->file(), $file->hash());
 
         $file = new FingerprintFile('assets/css/main.css');
-        $this->assertRegExp('/^.*\/main\.css\?v=\d{10}$/', $file->hash());
+        $this->assertMatchesRegularExpression('/^.*\/main\.css\?v=\d{10}$/', $file->hash());
 
         $file = new FingerprintFile('assets/js/main.js');
-        $this->assertRegExp('/^.*\/main\.js\?v=\d{10}$/', $file->hash());
+        $this->assertMatchesRegularExpression('/^.*\/main\.js\?v=\d{10}$/', $file->hash());
 
         $file = new FingerprintFile('assets/css/main.css');
         $manifest = __DIR__ . '/manifest.json';
-        $this->assertRegExp('/^.*assets\/css\/main\.\d{10}\.css$/', $file->hash($manifest));
+        $this->assertMatchesRegularExpression('/^.*assets\/css\/main\.\d{10}\.css$/', $file->hash($manifest));
     }
 
     public function testIntegrity()
     {
         $file = new FingerprintFile($this->testFile);
-        $this->assertRegExp('/^sha384-.{64}$/', $file->integrity());
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity());
 
         $file = new FingerprintFile($this->testFile);
-        $this->assertRegExp('/^sha384-.{64}$/', $file->integrity(false));
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity(false));
 
         $file = new FingerprintFile($this->assetPath);
-        $this->assertRegExp('/^sha384-.{64}$/', $file->integrity());
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity());
 
         $file = new FingerprintFile($this->assetPath);
-        $this->assertRegExp('/^sha384-.{64}$/', $file->integrity(false));
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity(false));
 
         $file = new FingerprintFile($this->invalidPath);
         $this->assertNull($file->integrity());

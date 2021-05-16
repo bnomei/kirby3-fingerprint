@@ -42,7 +42,9 @@ final class FingerprintTest extends TestCase
     {
         $fipr = new Fingerprint([
             'https' => false,
-            'debug' => function() { return false; },
+            'debug' => function () {
+                return false;
+            },
         ]);
         $this->assertFalse($fipr->option('https'));
         $this->assertFalse($fipr->option('debug'));
@@ -53,7 +55,7 @@ final class FingerprintTest extends TestCase
     {
         $fipr = new Fingerprint();
         $this->assertNull($fipr->apply('invalid-apply-call', $this->testFile));
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/^.*\/test.png\?v=\d{10}$/',
             $fipr->apply('hash', $this->testFile)
         );
@@ -62,12 +64,12 @@ final class FingerprintTest extends TestCase
     public function testHttps()
     {
         $fipr = new Fingerprint();
-        $this->assertRegExp('/^https:/', $fipr->https('http://example.com'));
+        $this->assertMatchesRegularExpression('/^https:/', $fipr->https('http://example.com'));
 
         $fipr = new Fingerprint([
             'https' => false,
         ]);
-        $this->assertNotRegExp('/^https:/', $fipr->https('http://example.com'));
+        $this->assertDoesNotMatchRegularExpression('/^https:/', $fipr->https('http://example.com'));
     }
 
     public function testProcess()
@@ -108,12 +110,12 @@ final class FingerprintTest extends TestCase
         $lookup = $fipr->process($this->testFile);
         $this->assertNull($fipr->read($this->testFile));
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/css\/main\.css\?v=\d{10}/',
             $fipr->process('/assets/css/main.css')['hash']
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/js\/main\.js\?v=\d{10}/',
             $fipr->process('/assets/js/main.js')['hash']
         );
@@ -121,7 +123,6 @@ final class FingerprintTest extends TestCase
 
     public function testAttrs()
     {
-
         $fipr = new Fingerprint();
         $lookup = $fipr->process($this->testFile);
 
@@ -161,7 +162,7 @@ final class FingerprintTest extends TestCase
 
     public function testStaticUrl()
     {
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/css\/main\.css\?v=\d{10}$/',
             Fingerprint::url('assets/css/main.css')
         );
@@ -174,17 +175,17 @@ final class FingerprintTest extends TestCase
             Fingerprint::css('assets/test.css')
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/css\/main\.css\?v=\d{10}/',
             Fingerprint::css('assets/css/main.css')
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/css\/main\.css\?v=\d{10}/',
             Fingerprint::css('/assets/css/main.css')
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/css\/templates\/default\.css\?v=\d{10}/',
             Fingerprint::css('@auto')
         );
@@ -197,17 +198,17 @@ final class FingerprintTest extends TestCase
             Fingerprint::js('assets/test.js')
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/js\/main\.js\?v=\d{10}/',
             Fingerprint::js('assets/js/main.js')
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/js\/main\.js\?v=\d{10}/',
             Fingerprint::js('/assets/js/main.js')
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/js\/templates\/default\.js\?v=\d{10}/',
             Fingerprint::js('@auto')
         );
@@ -219,12 +220,12 @@ final class FingerprintTest extends TestCase
             'query' => false,
         ]);
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/css\/main\.[a-z0-9]{32}\.css/',
             $fipr->process('/assets/css/main.css')['hash']
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/js\/main\.[a-z0-9]{32}\.js/',
             $fipr->process('/assets/js/main.js')['hash']
         );
@@ -233,12 +234,12 @@ final class FingerprintTest extends TestCase
     public function testManifestInsteadOfQuery()
     {
         $fipr = new Fingerprint([
-            'query' => function() {
+            'query' => function () {
                 return __DIR__ . '/manifest.json';
             },
         ]);
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/\/assets\/css\/main\.1234567890\.css/',
             $fipr->process('/assets/css/main.css')['hash']
         );
