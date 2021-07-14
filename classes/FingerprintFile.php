@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Bnomei;
 
 use Kirby\Exception\InvalidArgumentException;
+use Kirby\Http\Url;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\F;
+use Kirby\Toolkit\Str;
 use function dirname;
 use function filemtime;
 use function url;
@@ -96,6 +98,10 @@ final class FingerprintFile
                     $url = preg_replace('/\/'. kirby()->language()->code() .'$/', '', kirby()->site()->url());
                 }
                 $url = str_replace($url, '', $this->id());
+
+                $hasLeadingSlash = Str::substr(array_keys($manifest)[0], 0, 1) === '/';
+                $url = Url::path($url, $hasLeadingSlash);
+
                 $filename = basename(A::get(
                     $manifest,
                     $url,
