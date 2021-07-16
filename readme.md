@@ -84,7 +84,7 @@ echo Bnomei\Fingerprint::js(
 | hash | `callback` | will lead to the hashing logic |
 | integrity | `callback` | use it to set option `'integrity' => null,` |
 | https | `true` |  boolean value or callback to force *https* scheme. |
-| query | `true`|`string` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file |
+| query | `true` or `string` or `callback` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file |
 
 
 ### Query option: true (default)
