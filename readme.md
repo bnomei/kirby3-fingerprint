@@ -19,7 +19,7 @@ This plugin is free but if you use it in a commercial project please consider to
 
 ## Similar Plugins
 
-Both of the following plugins can do cachebusting but they do not cache the modified timestamp nor can they do SRI nor do cachebusting for non js/css files.
+The following plugins can do cachebusting but they do not cache the modified timestamp nor can they do SRI nor do cachebusting for non js/css files.
 
 - [bvdputte/kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint)
 - [schnti/kirby3-cachebuster](https://github.com/schnti/kirby3-cachebuster)
