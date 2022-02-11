@@ -220,6 +220,10 @@ final class Fingerprint
      */
     public static function css($url, $attrs = []): string
     {
+        if (is_string( $attrs)) {
+            $attrs = ['media' => $attrs];
+        }
+
         return (new Fingerprint())->helper('css', $url, $attrs);
     }
 
