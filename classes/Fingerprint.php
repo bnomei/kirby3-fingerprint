@@ -84,7 +84,7 @@ final class Fingerprint
      */
     public function https($url)
     {
-        if ($this->option('https')) {
+        if ($this->option('https') && !kirby()->system()->isLocal()) {
             $url = str_replace('http://', 'https://', $url);
         }
         return $url;

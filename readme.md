@@ -86,12 +86,12 @@ echo Bnomei\Fingerprint::js(
 
 ## Settings
 
-| bnomei.fingerprint.       | Default        | Description               |            
-|---------------------------|----------------|---------------------------|
-| hash | `callback` | will lead to the hashing logic |
-| integrity | `callback` | use it to set option `'integrity' => null,` |
-| https | `true` |  boolean value or callback to force *https* scheme. |
-| query | `true` or `string` or `callback` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file |
+| bnomei.fingerprint.       | Default        | Description                                                                         |            
+|---------------------------|----------------|-------------------------------------------------------------------------------------|
+| hash | `callback` | will lead to the hashing logic                                                      |
+| integrity | `callback` | use it to set option `'integrity' => null,`                                         |
+| https | `true` | boolean value or callback to force *https* scheme on all but localhost enviroments. |
+| query | `true` or `string` or `callback` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file               |
 
 
 ### Query option: true (default)
