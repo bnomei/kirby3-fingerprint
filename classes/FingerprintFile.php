@@ -85,10 +85,6 @@ final class FingerprintFile
     {
         $root = $this->fileRoot();
 
-        if (! F::exists($root)) {
-            return url($this->file);
-        }
-
         $filename = null;
         if (is_string($query) && F::exists($query)) {
             $manifest = json_decode(F::read($query), true);
@@ -109,6 +105,10 @@ final class FingerprintFile
                 ));
             }
         } elseif (is_bool($query)) {
+            if (! F::exists($root)) {
+                return url($this->file);
+            }
+
             $filename = implode('.', [
                 F::name($root),
                 $query ? F::extension($root) . '?v=' . filemtime($root) : md5_file($root) . '.' . F::extension($root)
@@ -143,7 +143,7 @@ final class FingerprintFile
                 // https://www.srihash.org/
                 $data = file_get_contents($root);
                 $digest_sha384 = openssl_digest($data, "sha384", true);
-                if($digest_sha384){
+                if ($digest_sha384) {
                     $output = base64_encode($digest_sha384);
                     return 'sha384-' . $output;
                 }
@@ -153,8 +153,7 @@ final class FingerprintFile
             if (is_array($output) && count($output) >= 1) {
                 return 'sha384-' . $output[0];
             }
-        } catch (\Exception $ex) {
-        }
+        } catch (\Exception $ex) {}
 
         return null; // @codeCoverageIgnore
     }
