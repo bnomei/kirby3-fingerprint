@@ -153,7 +153,8 @@ final class FingerprintFile
             if (is_array($output) && count($output) >= 1) {
                 return 'sha384-' . $output[0];
             }
-        } catch (\Exception $ex) {}
+        } catch (\Exception $ex) {
+        }
 
         return null; // @codeCoverageIgnore
     }

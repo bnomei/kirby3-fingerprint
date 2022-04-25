@@ -220,7 +220,7 @@ final class Fingerprint
      */
     public static function css($url, $attrs = []): string
     {
-        if (is_string( $attrs)) {
+        if (is_string($attrs)) {
             $attrs = ['media' => $attrs];
         }
 
