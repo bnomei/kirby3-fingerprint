@@ -86,6 +86,7 @@ final class FingerprintTest extends TestCase
 
         $root = (new FingerprintFile($this->assetPath))->fileRoot();
         $this->assertTrue(F::exists($root));
+        // this does not work on travis/gh
         $this->assertTrue(touch($root, time()-24*60*7));
         clearstatcache(); // https://stackoverflow.com/a/17380654
         $lookupTouched = $fipr->process($this->assetPath);
