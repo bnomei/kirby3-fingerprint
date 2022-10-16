@@ -8,6 +8,7 @@ use Exception;
 use Kirby\Cms\Url;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Toolkit\A;
+
 use function array_key_exists;
 
 final class Fingerprint
@@ -28,6 +29,7 @@ final class Fingerprint
             'query' => option('bnomei.fingerprint.query'),
             'hash' => option('bnomei.fingerprint.hash'),
             'integrity' => option('bnomei.fingerprint.integrity'),
+            'digest' => option('bnomei.fingerprint.digest'),
             'https' => option('bnomei.fingerprint.https'),
         ];
         $this->options = array_merge($defaults, $options);
@@ -70,7 +72,7 @@ final class Fingerprint
 
         if ($callback && is_callable($callback)) {
             if ($option === 'integrity') {
-                return call_user_func_array($callback, [$file]);
+                return call_user_func_array($callback, [$file, $this->option('digest'), $this->option('query')]);
             } elseif ($option === 'hash') {
                 return call_user_func_array($callback, [$file, $this->option('query')]);
             }

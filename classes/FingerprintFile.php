@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Bnomei;
 
+use Kirby\Data\Json;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Http\Url;
 use Kirby\Toolkit\A;
 use Kirby\Toolkit\F;
 use Kirby\Toolkit\Str;
+
 use function dirname;
 use function filemtime;
 use function url;
@@ -87,7 +89,7 @@ final class FingerprintFile
 
         $filename = null;
         if (is_string($query) && F::exists($query)) {
-            $manifest = json_decode(F::read($query), true);
+            $manifest = Json::read($query);
             if (is_array($manifest)) {
                 $url = '';
                 if (kirby()->language()) {
@@ -127,34 +129,53 @@ final class FingerprintFile
     }
 
     /**
-     * @param bool $openssl
-     * @return string|null
+     * @param string|null $digest Cryptographic digest function
+     * @param string|null $manifest Path to manifest file
+     * @return string|null Subresource integrity string
      */
-    public function integrity(bool $openssl = true): ?string
+    public function integrity(?string $digest = null, ?string $manifest = null): ?string
     {
         $root = $this->fileRoot();
 
-        if (! F::exists($root)) {
+        if (is_string($manifest) && F::exists($manifest)) {
+            $data = Json::read($manifest);
+
+            if (is_array($data)) {
+                $url = '';
+                if (kirby()->language()) {
+                    $url = preg_replace('/\/'. kirby()->language()->code() .'$/', '', kirby()->site()->url());
+                }
+                $url = str_replace($url, '', $this->id());
+                $hasLeadingSlash = Str::substr(array_keys($data)[0], 0, 1) === '/';
+                $url = Url::path($url, $hasLeadingSlash);
+
+                $filename = basename(A::get($data, $url, $root));
+                $dest = str_replace(basename($root), $filename, $root);
+
+                if (F::exists($dest)) {
+                    $root = $dest;
+                }
+            }
+        }
+
+        if (!F::exists($root)) {
             return null;
         }
 
-        try {
-            if ($openssl && extension_loaded('openssl')) {
-                // https://www.srihash.org/
-                $data = file_get_contents($root);
-                $digest_sha384 = openssl_digest($data, "sha384", true);
-                if ($digest_sha384) {
-                    $output = base64_encode($digest_sha384);
-                    return 'sha384-' . $output;
-                }
-            }
-
-            exec('shasum -b -a 384 ' . $root . ' | xxd -r -p | base64', $output, $return);
-            if (is_array($output) && count($output) >= 1) {
-                return 'sha384-' . $output[0];
-            }
-        } catch (\Exception $ex) {
+        # Select hashing algorithm
+        if (!in_array($digest, ['sha256', 'sha384', 'sha512'])) {
+            $digest = 'sha384';
         }
+
+        # If hashing file contents succeeds ..
+        if ($hash = hash($digest, file_get_contents($root), true)) {
+            # .. encode hash using 'base64'
+            $b64 = base64_encode($hash);
+
+            # Glue everything together, forming an SRI string
+            return "{$digest}-{$b64}";
+        }
+
 
         return null; // @codeCoverageIgnore
     }

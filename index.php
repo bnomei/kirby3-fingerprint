@@ -6,14 +6,15 @@ Kirby::plugin('bnomei/fingerprint', [
     'options' => [
         'cache' => true,
         'query' => true,
+        'digest' => 'sha384',
         'https' => function () {
             return kirby()->system()->isLocal() === false;
         },
         'hash' => function ($file, $query = true) {
             return (new \Bnomei\FingerprintFile($file))->hash($query);
         },
-        'integrity' => function ($file) {
-            return (new \Bnomei\FingerprintFile($file))->integrity();
+        'integrity' => function ($file, ?string $digest = null, ?string $manifest = null) {
+            return (new \Bnomei\FingerprintFile($file))->integrity($digest, $manifest);
         },
     ],
     'fileMethods' => [
