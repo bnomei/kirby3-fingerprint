@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bnomei;
 
+use Kirby\Cms\File;
+use Kirby\Cms\FileVersion;
 use Kirby\Data\Json;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Http\Url;
@@ -17,20 +19,27 @@ use function url;
 
 final class FingerprintFile
 {
-    /*
-     * @var Kirby\Cms\File|Kirby\Cms\FileVersion
+    /**
+     * Input file
+     *
+     * @var File|FileVersion|string
      */
     private $file;
 
-    /*
+
+    /**
+     * Whether input file represents 'File' object
+     *
      * @var bool
      */
     private $isKirbyFile;
 
+
     /**
      * FingerprintFile constructor.
      *
-     * @param $file
+     * @param File|FileVersion|string $file Input file
+     * @return void
      * @throws InvalidArgumentException
      */
     public function __construct($file)
@@ -42,7 +51,10 @@ final class FingerprintFile
         }
     }
 
+
     /**
+     * Retrieves absolute path to input file
+     *
      * @return string
      */
     public function id(): string
@@ -54,13 +66,16 @@ final class FingerprintFile
         return ltrim($this->file, '/');
     }
 
+
     /**
+     * Retrieves last modification time of input file
+     *
      * @return int|null
      */
     public function modified(): ?int
     {
         $root = $this->fileRoot();
-        if (! F::exists($root)) {
+        if (!F::exists($root)) {
             return null;
         }
 
@@ -71,7 +86,7 @@ final class FingerprintFile
             if (!$modified) {
                 $modified = $this->file->modified();
             }
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
         } else {
             $modified = F::modified($root);
         }
@@ -79,9 +94,12 @@ final class FingerprintFile
         return $modified;
     }
 
+
     /**
-     * @param $query
-     * @return string
+     * Provides URL path for hashed filename
+     *
+     * @param bool|string $query Option determining use of query string vs file hash
+     * @return string URL path pointing to (modified) file
      */
     public function hash($query = true): string
     {
@@ -107,14 +125,18 @@ final class FingerprintFile
                 ));
             }
         } elseif (is_bool($query)) {
-            if (! F::exists($root)) {
+            if (!F::exists($root)) {
                 return url($this->file);
             }
 
-            $filename = implode('.', [
-                F::name($root),
-                $query ? F::extension($root) . '?v=' . filemtime($root) : md5_file($root) . '.' . F::extension($root)
-            ]);
+            # Determine file suffix, either ..
+            $suffix = $query
+                # .. query string
+                ? F::extension($root) . '?v=' . filemtime($root)
+                # .. MD5 filehash
+                : md5_file($root) . '.' . F::extension($root);
+
+            $filename = implode('.', [F::name($root), $suffix]);
         }
 
         $url = null;
@@ -128,7 +150,10 @@ final class FingerprintFile
         return url($url);
     }
 
+
     /**
+     * Calculates SRI hash value for input file
+     *
      * @param string|null $digest Cryptographic digest function
      * @param string|null $manifest Path to manifest file
      * @return string|null Subresource integrity string
@@ -176,11 +201,13 @@ final class FingerprintFile
             return "{$digest}-{$b64}";
         }
 
-
         return null; // @codeCoverageIgnore
     }
 
+
     /**
+     * Provides absolute path to input file
+     *
      * @return string
      */
     public function fileRoot(): string
@@ -197,8 +224,11 @@ final class FingerprintFile
         return kirby()->roots()->index() . DIRECTORY_SEPARATOR . $uri;
     }
 
+
     /**
-     * @return mixed
+     * Provides input file
+     *
+     * @return File|FileVersion|string
      */
     public function file()
     {
