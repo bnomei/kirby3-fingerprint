@@ -3,8 +3,8 @@
 ![Release](https://flat.badgen.net/packagist/v/bnomei/kirby3-fingerprint?color=ae81ff)
 ![Downloads](https://flat.badgen.net/packagist/dt/bnomei/kirby3-fingerprint?color=272822)
 [![Build Status](https://flat.badgen.net/travis/bnomei/kirby3-fingerprint)](https://travis-ci.com/bnomei/kirby3-fingerprint)
-[![Coverage Status](https://flat.badgen.net/coveralls/c/github/bnomei/kirby3-fingerprint)](https://coveralls.io/github/bnomei/kirby3-fingerprint) 
-[![Maintainability](https://flat.badgen.net/codeclimate/maintainability/bnomei/kirby3-fingerprint)](https://codeclimate.com/github/bnomei/kirby3-fingerprint) 
+[![Coverage Status](https://flat.badgen.net/coveralls/c/github/bnomei/kirby3-fingerprint)](https://coveralls.io/github/bnomei/kirby3-fingerprint)
+[![Maintainability](https://flat.badgen.net/codeclimate/maintainability/bnomei/kirby3-fingerprint)](https://codeclimate.com/github/bnomei/kirby3-fingerprint)
 [![Twitter](https://flat.badgen.net/badge/twitter/bnomei?color=66d9ef)](https://twitter.com/bnomei)
 
 
@@ -18,7 +18,7 @@ File Method and css/js helper to add cachebusting hash and optional [Subresource
 > If my work helped you to make some cash it seems fair to me that I might get a little reward as well, right?<br><br>
 > Be kind. Share a little. Thanks.<br><br>
 > &dash; Bruno<br>
-> &nbsp; 
+> &nbsp;
 
 | M | O | N | E | Y |
 |---|----|---|---|---|
@@ -60,11 +60,11 @@ echo $page->file('ukulele.pdf')->integrity();
 
 // generate sri from local file
 echo Bnomei\Fingerprint::js(
-    '/assets/js/index.min.js', 
+    '/assets/js/index.min.js',
     [
         "integrity" => true
     ]
-); 
+);
 /*
 <script src="https://../assets/js/index.min.js"
     integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"
@@ -72,7 +72,7 @@ echo Bnomei\Fingerprint::js(
 */
 
 echo Bnomei\Fingerprint::js(
-    'https://external.cdn/framework.min.js', 
+    'https://external.cdn/framework.min.js',
     [
         "integrity" => "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"
     ]
@@ -86,10 +86,11 @@ echo Bnomei\Fingerprint::js(
 
 ## Settings
 
-| bnomei.fingerprint.       | Default        | Description                                                                         |            
+| bnomei.fingerprint.       | Default        | Description                                                                         |
 |---------------------------|----------------|-------------------------------------------------------------------------------------|
 | hash | `callback` | will lead to the hashing logic                                                      |
 | integrity | `callback` | use it to set option `'integrity' => null,`                                         |
+| digest | `'sha384'` | Cryptographic digest to be used for SRI hashes either `'sha256'`, `'sha384'` or `'sha512'`. |
 | https | `true` | boolean value or callback to force *https* scheme on all but localhost enviroments. |
 | query | `true` or `string` or `callback` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file               |
 
@@ -106,7 +107,7 @@ This is the default since it works without additional changes to your server but
 
 If you disable the query option you also also need to add apache or nginx rules. These rules will redirect css and js files from with hash to the asset on disk.
 
-**.htaccess** – put this directly after the `RewriteBase` statment
+**.htaccess** - put this directly after the `RewriteBase` statment
 ```apacheconfig
 # RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f

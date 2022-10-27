@@ -130,6 +130,10 @@ class FingerprintFileTest extends TestCase
         $file = new FingerprintFile('assets/css/main.css');
         $manifest = __DIR__ . '/manifest.json';
         $this->assertMatchesRegularExpression('/^.*assets\/css\/main\.\d{10}\.css$/', $file->hash($manifest));
+
+        $file = new FingerprintFile('assets/manifest/invalid.png');
+        $manifest = __DIR__ . '/manifest_renamed_src.json';
+        $this->assertMatchesRegularExpression('/^.*assets\/manifest\/valid\.\d{10}\.png$/', $file->hash($manifest));
     }
 
     public function testIntegrity()
@@ -138,15 +142,35 @@ class FingerprintFileTest extends TestCase
         $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity());
 
         $file = new FingerprintFile($this->testFile);
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity(false));
+        $this->assertMatchesRegularExpression('/^sha256-.{44}$/', $file->integrity('sha256'));
+
+        $file = new FingerprintFile($this->testFile);
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384'));
+
+        $file = new FingerprintFile($this->testFile);
+        $this->assertMatchesRegularExpression('/^sha512-.{88}$/', $file->integrity('sha512'));
 
         $file = new FingerprintFile($this->assetPath);
         $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity());
 
         $file = new FingerprintFile($this->assetPath);
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity(false));
+        $this->assertMatchesRegularExpression('/^sha256-.{44}$/', $file->integrity('sha256'));
+
+        $file = new FingerprintFile($this->assetPath);
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384'));
+
+        $file = new FingerprintFile($this->assetPath);
+        $this->assertMatchesRegularExpression('/^sha512-.{88}$/', $file->integrity('sha512'));
 
         $file = new FingerprintFile($this->invalidPath);
         $this->assertNull($file->integrity());
+
+        $file = new FingerprintFile('assets/css/main.css');
+        $manifest = __DIR__ . '/manifest.json';
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384', $manifest));
+
+        $file = new FingerprintFile('assets/manifest/invalid.png');
+        $manifest = __DIR__ . '/manifest_renamed_src.json';
+        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384', $manifest));
     }
 }

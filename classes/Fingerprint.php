@@ -5,21 +5,29 @@ declare(strict_types=1);
 namespace Bnomei;
 
 use Exception;
+use Kirby\Cms\File;
+use Kirby\Cms\FileVersion;
 use Kirby\Cms\Url;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Toolkit\A;
+
 use function array_key_exists;
 
 final class Fingerprint
 {
     /**
+     * Plugin options
+     *
      * @var array
      */
     private $options;
 
+
     /**
      * Fingerprint constructor.
-     * @param array $options
+     *
+     * @param array $options Plugin options
+     * @return void
      */
     public function __construct(array $options = [])
     {
@@ -28,6 +36,7 @@ final class Fingerprint
             'query' => option('bnomei.fingerprint.query'),
             'hash' => option('bnomei.fingerprint.hash'),
             'integrity' => option('bnomei.fingerprint.integrity'),
+            'digest' => option('bnomei.fingerprint.digest'),
             'https' => option('bnomei.fingerprint.https'),
         ];
         $this->options = array_merge($defaults, $options);
@@ -47,9 +56,12 @@ final class Fingerprint
         }
     }
 
+
     /**
-     * @param string|null $key
-     * @return array|mixed
+     * Gets plugin option by its name
+     *
+     * @param string|null $key Option name
+     * @return mixed
      */
     public function option(?string $key = null)
     {
@@ -59,10 +71,13 @@ final class Fingerprint
         return $this->options;
     }
 
+
     /**
-     * @param string $option
-     * @param $file
-     * @return mixed|null
+     * Applies hash/integrity functions
+     *
+     * @param string $option Plugin option/function name
+     * @param $file File|FileVersion|string Input file
+     * @return mixed
      */
     public function apply(string $option, $file)
     {
@@ -70,7 +85,7 @@ final class Fingerprint
 
         if ($callback && is_callable($callback)) {
             if ($option === 'integrity') {
-                return call_user_func_array($callback, [$file]);
+                return call_user_func_array($callback, [$file, $this->option('digest'), $this->option('query')]);
             } elseif ($option === 'hash') {
                 return call_user_func_array($callback, [$file, $this->option('query')]);
             }
@@ -79,10 +94,12 @@ final class Fingerprint
     }
 
     /**
-     * @param $url
-     * @return mixed
+     * Formats URL to use 'https'
+     *
+     * @param string $url URL part
+     * @return string
      */
-    public function https($url)
+    public function https(string $url): string
     {
         if ($this->option('https') && !kirby()->system()->isLocal()) {
             $url = str_replace('http://', 'https://', $url);
@@ -91,7 +108,9 @@ final class Fingerprint
     }
 
     /**
-     * @param $file
+     * Processes input file
+     *
+     * @param File|FileVersion|string $file Input file
      * @return mixed
      * @throws InvalidArgumentException
      */
@@ -99,7 +118,7 @@ final class Fingerprint
     {
         $needsPush = false;
         $lookup = $this->read();
-        if (! $lookup) {
+        if (!$lookup) {
             $lookup = [];
             $needsPush = true;
         }
@@ -108,7 +127,7 @@ final class Fingerprint
         $id = $finFile->id();
         $mod = $finFile->modified();
 
-        if (! array_key_exists($id, $lookup)) {
+        if (!array_key_exists($id, $lookup)) {
             $needsPush = true;
         } elseif ($mod && $lookup[$id]['modified'] < $mod) {
             $needsPush = true;
@@ -142,7 +161,7 @@ final class Fingerprint
         if ($sri && strlen($sri) > 0) {
             $attrs['integrity'] = $sri;
             $attrs['crossorigin'] = A::get($attrs, 'crossorigin', 'anonymous');
-        } elseif (! $sri) {
+        } elseif (!$sri) {
             if (array_key_exists('integrity', $attrs)) {
                 unset($attrs['integrity']);
             }
@@ -154,14 +173,16 @@ final class Fingerprint
     }
 
     /**
-     * @param string $extension
-     * @param string $url
-     * @param array $attrs
+     * Helper shorthand
+     *
+     * @param string $extension Helper name
+     * @param string $url URL part
+     * @param array $attrs HTML attributes
      * @return string|null
      */
     public function helper(string $extension, string $url, array $attrs = []): ?string
     {
-        if (! is_callable($extension)) {
+        if (!is_callable($extension)) {
             return null;
         }
 
@@ -179,6 +200,8 @@ final class Fingerprint
     }
 
     /**
+     * Retrieves cache key
+     *
      * @return string
      */
     public function cacheKey(): string
@@ -191,6 +214,8 @@ final class Fingerprint
     }
 
     /**
+     * Retrieves cached data
+     *
      * @return array|null
      */
     public function read(): ?array
@@ -202,6 +227,8 @@ final class Fingerprint
     }
 
     /**
+     * Stores data in cache
+     *
      * @param array $lookup
      * @return bool
      */
@@ -214,9 +241,11 @@ final class Fingerprint
     }
 
     /**
-     * @param $url
+     * Stylesheet helper
+     *
+     * @param $url URL part
      * @param array $attrs
-     * @return mixed
+     * @return string
      */
     public static function css($url, $attrs = []): string
     {
@@ -228,9 +257,11 @@ final class Fingerprint
     }
 
     /**
-     * @param $url
-     * @param array $attrs
-     * @return mixed
+     * JavaScript helper
+     *
+     * @param $url URL part
+     * @param array $attrs HTML attributes
+     * @return string
      */
     public static function js($url, $attrs = []): string
     {
@@ -238,9 +269,11 @@ final class Fingerprint
     }
 
     /**
-     * @param $url
-     * @param array $attrs
-     * @return mixed
+     * Builds full URL
+     *
+     * @param $url URL part
+     * @param array $attrs HTML attributes
+     * @return string
      */
     public static function url($url): string
     {
