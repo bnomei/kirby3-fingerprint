@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "236640e9608e2079e283d749a496a3d0",
+    "content-hash": "6220aadc1d9e6faf5b5d99d7da65e1fe",
     "packages": [
         {
             "name": "getkirby/composer-installer",
@@ -247,16 +247,16 @@
         },
         {
             "name": "getkirby/cms",
-            "version": "3.6.5",
+            "version": "3.6.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getkirby/kirby.git",
-                "reference": "40d2ee98b51644b8eefa814c37f3b402a9fdb994"
+                "reference": "c0a92657515c90ca549fe14894cbe65a1ac99cc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getkirby/kirby/zipball/40d2ee98b51644b8eefa814c37f3b402a9fdb994",
-                "reference": "40d2ee98b51644b8eefa814c37f3b402a9fdb994",
+                "url": "https://api.github.com/repos/getkirby/kirby/zipball/c0a92657515c90ca549fe14894cbe65a1ac99cc0",
+                "reference": "c0a92657515c90ca549fe14894cbe65a1ac99cc0",
                 "shasum": ""
             },
             "require": {
@@ -324,7 +324,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2022-04-19T12:49:55+00:00"
+            "time": "2022-10-18T08:52:49+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3684,16 +3684,16 @@
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.25.0",
+            "version": "v1.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-                "reference": "8590a5f561694770bdcd3f9b5c69dde6945028e8"
+                "reference": "219aa369ceff116e673852dce47c3a41794c14bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/8590a5f561694770bdcd3f9b5c69dde6945028e8",
-                "reference": "8590a5f561694770bdcd3f9b5c69dde6945028e8",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/219aa369ceff116e673852dce47c3a41794c14bd",
+                "reference": "219aa369ceff116e673852dce47c3a41794c14bd",
                 "shasum": ""
             },
             "require": {
@@ -3705,7 +3705,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.23-dev"
+                    "dev-main": "1.26-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -3748,7 +3748,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.25.0"
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.26.0"
             },
             "funding": [
                 {
@@ -3764,7 +3764,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-02-19T12:13:01+00:00"
+            "time": "2022-05-24T11:49:31+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
