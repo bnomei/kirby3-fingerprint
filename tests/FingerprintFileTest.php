@@ -1,176 +1,125 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 use Bnomei\FingerprintFile;
-use PHPUnit\Framework\TestCase;
 
-class FingerprintFileTest extends TestCase
-{
-    /*
-     * @var Kirby\Cms\File|Kirby\Cms\FileVersion
-     */
-    private $testFile;
+beforeEach(function () {
+    $this->testFile = page('home')->file('test.png');
+    $this->assetPath = 'assets/asset.png';
+    $this->invalidPath = 'invalid/file.jpg';
+    $this->url = 'http://example.com/app.css';
+});
+test('construct', function () {
+    $file = new FingerprintFile($this->testFile);
+    expect($file)->toBeInstanceOf(FingerprintFile::class);
 
-    /*
-     * @var string
-     */
-    private $assetPath;
+    $file = new FingerprintFile($this->assetPath);
+    expect($file)->toBeInstanceOf(FingerprintFile::class);
+});
+test('id', function () {
+    $file = new FingerprintFile($this->testFile);
+    expect($file->id())->toEqual($this->testFile->root());
 
-    /*
-     * @var string
-     */
-    private $invalidPath;
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->id())->toEqual($this->assetPath);
 
-    /*
-     * @var string
-     */
-    private $url;
+    $file = new FingerprintFile($this->url);
+    expect($file->id())->toEqual($this->url);
+});
+test('modified', function () {
+    $file = new FingerprintFile($this->testFile);
+    expect($file->modified())->toBeInt();
 
-    public function setUp(): void
-    {
-        $this->testFile = page('home')->file('test.png');
-        $this->assetPath = 'assets/asset.png';
-        $this->invalidPath = 'invalid/file.jpg';
-        $this->url = 'http://example.com/app.css';
-    }
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->modified())->toBeInt();
 
-    public function testConstruct()
-    {
-        $file = new FingerprintFile($this->testFile);
-        $this->assertInstanceOf(FingerprintFile::class, $file);
+    $file = new FingerprintFile($this->url);
+    expect($file->modified())->toBeNull();
+});
+test('file', function () {
+    $file = new FingerprintFile($this->testFile);
+    expect($file->file())->toEqual($this->testFile);
 
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertInstanceOf(FingerprintFile::class, $file);
-    }
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->file())->toEqual(url($this->assetPath));
 
-    public function testId()
-    {
-        $file = new FingerprintFile($this->testFile);
-        $this->assertEquals($this->testFile->root(), $file->id());
+    $file = new FingerprintFile($this->invalidPath);
+    expect($file->file())->toEqual(url($this->invalidPath));
+});
+test('fileroot', function () {
+    $file = new FingerprintFile($this->testFile);
+    expect($file->fileRoot())->toEqual($this->testFile->root());
 
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertEquals($this->assetPath, $file->id());
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->fileRoot())->toEqual(kirby()->roots()->index().DIRECTORY_SEPARATOR.$this->assetPath);
 
-        $file = new FingerprintFile($this->url);
-        $this->assertEquals($this->url, $file->id());
-    }
+    $file = new FingerprintFile(DIRECTORY_SEPARATOR.$this->assetPath);
+    expect($file->fileRoot())->toEqual(kirby()->roots()->index().DIRECTORY_SEPARATOR.$this->assetPath);
 
-    public function testModified()
-    {
-        $file = new FingerprintFile($this->testFile);
-        $this->assertIsInt($file->modified());
+    $file = new FingerprintFile($this->invalidPath);
+    expect($file->fileRoot())->toEqual(kirby()->roots()->index().DIRECTORY_SEPARATOR.$this->invalidPath);
+});
+test('hash', function () {
+    $file = new FingerprintFile($this->testFile);
+    expect($file->hash())->toMatch('/^.*\/test\.png\?v=\d{10}$/');
 
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertIsInt($file->modified());
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->hash())->toMatch('/^\/assets\/asset\.png\?v=\d{10}$/');
 
-        $file = new FingerprintFile($this->url);
-        $this->assertNull($file->modified());
-    }
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->hash(false))->toMatch('/^\/assets\/asset\.\w{32}\.png$/');
 
-    public function testFile()
-    {
-        $file = new FingerprintFile($this->testFile);
-        $this->assertEquals($this->testFile, $file->file());
+    $file = new FingerprintFile($this->invalidPath);
+    expect($file->hash())->toEqual($file->file());
 
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertEquals(url($this->assetPath), $file->file());
+    $file = new FingerprintFile('assets/css/main.css');
+    expect($file->hash())->toMatch('/^.*\/main\.css\?v=\d{10}$/');
 
-        $file = new FingerprintFile($this->invalidPath);
-        $this->assertEquals(url($this->invalidPath), $file->file());
-    }
+    $file = new FingerprintFile('assets/js/main.js');
+    expect($file->hash())->toMatch('/^.*\/main\.js\?v=\d{10}$/');
 
-    public function testFileroot()
-    {
-        $file = new FingerprintFile($this->testFile);
-        $this->assertEquals(
-            $this->testFile->root(),
-            $file->fileRoot()
-        );
+    $file = new FingerprintFile('assets/css/main.css');
+    $manifest = __DIR__.'/manifest.json';
+    expect($file->hash($manifest))->toMatch('/^.*assets\/css\/main\.\d{10}\.css$/');
 
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertEquals(
-            kirby()->roots()->index() . DIRECTORY_SEPARATOR . $this->assetPath,
-            $file->fileRoot()
-        );
+    $file = new FingerprintFile('assets/manifest/invalid.png');
+    $manifest = __DIR__.'/manifest_renamed_src.json';
+    expect($file->hash($manifest))->toMatch('/^.*assets\/manifest\/valid\.\d{10}\.png$/');
+});
+test('integrity', function () {
+    $file = new FingerprintFile($this->testFile);
+    expect($file->integrity())->toMatch('/^sha384-.{64}$/');
 
-        $file = new FingerprintFile(DIRECTORY_SEPARATOR . $this->assetPath);
-        $this->assertEquals(
-            kirby()->roots()->index() . DIRECTORY_SEPARATOR . $this->assetPath,
-            $file->fileRoot()
-        );
+    $file = new FingerprintFile($this->testFile);
+    expect($file->integrity('sha256'))->toMatch('/^sha256-.{44}$/');
 
-        $file = new FingerprintFile($this->invalidPath);
-        $this->assertEquals(
-            kirby()->roots()->index() . DIRECTORY_SEPARATOR . $this->invalidPath,
-            $file->fileRoot()
-        );
-    }
+    $file = new FingerprintFile($this->testFile);
+    expect($file->integrity('sha384'))->toMatch('/^sha384-.{64}$/');
 
-    public function testHash()
-    {
-        $file = new FingerprintFile($this->testFile);
-        $this->assertMatchesRegularExpression('/^.*\/test\.png\?v=\d{10}$/', $file->hash());
+    $file = new FingerprintFile($this->testFile);
+    expect($file->integrity('sha512'))->toMatch('/^sha512-.{88}$/');
 
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertMatchesRegularExpression('/^\/assets\/asset\.png\?v=\d{10}$/', $file->hash());
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->integrity())->toMatch('/^sha384-.{64}$/');
 
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertMatchesRegularExpression('/^\/assets\/asset\.\w{32}\.png$/', $file->hash(false));
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->integrity('sha256'))->toMatch('/^sha256-.{44}$/');
 
-        $file = new FingerprintFile($this->invalidPath);
-        $this->assertEquals($file->file(), $file->hash());
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->integrity('sha384'))->toMatch('/^sha384-.{64}$/');
 
-        $file = new FingerprintFile('assets/css/main.css');
-        $this->assertMatchesRegularExpression('/^.*\/main\.css\?v=\d{10}$/', $file->hash());
+    $file = new FingerprintFile($this->assetPath);
+    expect($file->integrity('sha512'))->toMatch('/^sha512-.{88}$/');
 
-        $file = new FingerprintFile('assets/js/main.js');
-        $this->assertMatchesRegularExpression('/^.*\/main\.js\?v=\d{10}$/', $file->hash());
+    $file = new FingerprintFile($this->invalidPath);
+    expect($file->integrity())->toBeNull();
 
-        $file = new FingerprintFile('assets/css/main.css');
-        $manifest = __DIR__ . '/manifest.json';
-        $this->assertMatchesRegularExpression('/^.*assets\/css\/main\.\d{10}\.css$/', $file->hash($manifest));
+    $file = new FingerprintFile('assets/css/main.css');
+    $manifest = __DIR__.'/manifest.json';
+    expect($file->integrity('sha384', $manifest))->toMatch('/^sha384-.{64}$/');
 
-        $file = new FingerprintFile('assets/manifest/invalid.png');
-        $manifest = __DIR__ . '/manifest_renamed_src.json';
-        $this->assertMatchesRegularExpression('/^.*assets\/manifest\/valid\.\d{10}\.png$/', $file->hash($manifest));
-    }
-
-    public function testIntegrity()
-    {
-        $file = new FingerprintFile($this->testFile);
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity());
-
-        $file = new FingerprintFile($this->testFile);
-        $this->assertMatchesRegularExpression('/^sha256-.{44}$/', $file->integrity('sha256'));
-
-        $file = new FingerprintFile($this->testFile);
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384'));
-
-        $file = new FingerprintFile($this->testFile);
-        $this->assertMatchesRegularExpression('/^sha512-.{88}$/', $file->integrity('sha512'));
-
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity());
-
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertMatchesRegularExpression('/^sha256-.{44}$/', $file->integrity('sha256'));
-
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384'));
-
-        $file = new FingerprintFile($this->assetPath);
-        $this->assertMatchesRegularExpression('/^sha512-.{88}$/', $file->integrity('sha512'));
-
-        $file = new FingerprintFile($this->invalidPath);
-        $this->assertNull($file->integrity());
-
-        $file = new FingerprintFile('assets/css/main.css');
-        $manifest = __DIR__ . '/manifest.json';
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384', $manifest));
-
-        $file = new FingerprintFile('assets/manifest/invalid.png');
-        $manifest = __DIR__ . '/manifest_renamed_src.json';
-        $this->assertMatchesRegularExpression('/^sha384-.{64}$/', $file->integrity('sha384', $manifest));
-    }
-}
+    $file = new FingerprintFile('assets/manifest/invalid.png');
+    $manifest = __DIR__.'/manifest_renamed_src.json';
+    expect($file->integrity('sha384', $manifest))->toMatch('/^sha384-.{64}$/');
+});

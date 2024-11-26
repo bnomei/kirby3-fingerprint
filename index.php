@@ -1,6 +1,30 @@
 <?php
 
-@include_once __DIR__ . '/vendor/autoload.php';
+use Kirby\Cms\File;
+use Kirby\Cms\FileVersion;
+
+@include_once __DIR__.'/vendor/autoload.php';
+
+if (! function_exists('css_f')) {
+    function css_f(File|FileVersion|string $url, string|array $attrs = []): ?string
+    {
+        return (new \Bnomei\Fingerprint)->css($url, $attrs);
+    }
+}
+
+if (! function_exists('js_f')) {
+    function js_f(File|FileVersion|string $url, array $attrs = []): ?string
+    {
+        return (new \Bnomei\Fingerprint)->js($url, $attrs);
+    }
+}
+
+if (! function_exists('url_f')) {
+    function url_f(File|FileVersion|string $url): string
+    {
+        return (new \Bnomei\Fingerprint)->url($url);
+    }
+}
 
 Kirby::plugin('bnomei/fingerprint', [
     'options' => [
@@ -19,10 +43,10 @@ Kirby::plugin('bnomei/fingerprint', [
     ],
     'fileMethods' => [
         'fingerprint' => function () {
-            return (new \Bnomei\Fingerprint())->process($this)['hash'];
+            return (new \Bnomei\Fingerprint)->process($this)['hash'];
         },
         'integrity' => function () {
-            return (new \Bnomei\Fingerprint())->process($this)['integrity'];
+            return (new \Bnomei\Fingerprint)->process($this)['integrity'];
         },
     ],
 ]);

@@ -1,26 +1,16 @@
-# Kirby 3 Fingerprint
+# Kirby Fingerprint
 
-![Release](https://flat.badgen.net/packagist/v/bnomei/kirby3-fingerprint?color=ae81ff)
-![Downloads](https://flat.badgen.net/packagist/dt/bnomei/kirby3-fingerprint?color=272822)
-[![Build Status](https://flat.badgen.net/travis/bnomei/kirby3-fingerprint)](https://travis-ci.com/bnomei/kirby3-fingerprint)
-[![Coverage Status](https://flat.badgen.net/coveralls/c/github/bnomei/kirby3-fingerprint)](https://coveralls.io/github/bnomei/kirby3-fingerprint)
-[![Maintainability](https://flat.badgen.net/codeclimate/maintainability/bnomei/kirby3-fingerprint)](https://codeclimate.com/github/bnomei/kirby3-fingerprint)
-[![Twitter](https://flat.badgen.net/badge/twitter/bnomei?color=66d9ef)](https://twitter.com/bnomei)
+[![Kirby 5](https://flat.badgen.net/badge/Kirby/5?color=ECC748)](https://getkirby.com)
+![PHP 8.2](https://flat.badgen.net/badge/PHP/8.2?color=4E5B93&icon=php&label)
+![Release](https://flat.badgen.net/packagist/v/bnomei/kirby3-fingerprint?color=ae81ff&icon=github&label)
+![Downloads](https://flat.badgen.net/packagist/dt/bnomei/kirby3-fingerprint?color=272822&icon=github&label)
+[![Coverage](https://flat.badgen.net/codeclimate/coverage/bnomei/kirby3-fingerprint?icon=codeclimate&label)](https://codeclimate.com/github/bnomei/kirby3-fingerprint)
+[![Maintainability](https://flat.badgen.net/codeclimate/maintainability/bnomei/kirby3-fingerprint?icon=codeclimate&label)](https://codeclimate.com/github/bnomei/kirby3-fingerprint/issues)
+[![Discord](https://flat.badgen.net/badge/discord/bnomei?color=7289da&icon=discord&label)](https://discordapp.com/users/bnomei)
+[![Buymecoffee](https://flat.badgen.net/badge/icon/donate?icon=buymeacoffee&color=FF813F&label)](https://www.buymeacoffee.com/bnomei)
 
 
-File Method and css/js helper to add cachebusting hash and optional [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) to files.
-
-| M | O | N | E | Y |
-|---|----|---|---|---|
-| [Github sponsor](https://github.com/sponsors/bnomei) | [Patreon](https://patreon.com/bnomei) | [Buy Me a Coffee](https://buymeacoff.ee/bnomei) | [Paypal dontation](https://www.paypal.me/bnomei/15) | [Hire me](mailto:b@bnomei.com?subject=Kirby) |
-
-## Similar Plugins
-
-The following plugins can do cachebusting but they do not cache the modified timestamp nor can they do SRI nor do cachebusting for non js/css files.
-
-- [bvdputte/kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint)
-- [schnti/kirby3-cachebuster](https://github.com/schnti/kirby3-cachebuster)
-- [diverently/laravel-mix-kirby](https://github.com/diverently/laravel-mix-kirby)
+File Method and css/js helper to add a cache busting hash and optional [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) to files.
 
 ## Installation
 
@@ -30,15 +20,19 @@ The following plugins can do cachebusting but they do not cache the modified tim
 
 ## Usage
 
-> This Plugin does **not** override the build in js/css helpers. Use `Bnomei\Fingerprint::css` and `Bnomei\Fingerprint::js` when you need them.
+> [!ATTENTION]
+> This Plugin does **not** override the build in `js()`/`css()` helpers. Use `css_f`/`Bnomei\Fingerprint::css` and `js_f`/`Bnomei\Fingerprint::js` when you need them.
 
 ```php
+echo css_f('/assets/css/index.css');
 echo Bnomei\Fingerprint::css('/assets/css/index.css');
 // <style> element with https://../assets/css/index.css?v=1203291283
 
+echo js_f('/assets/js/index.min.js');
 echo Bnomei\Fingerprint::js('/assets/js/index.min.js');
 // <link> element https://../assets/js/index.min.js?v=1203291283
 
+echo url_f('/assets/css/index.css');
 echo Bnomei\Fingerprint::url('/assets/css/index.css');
 // raw url https://../assets/css/index.css?v=1203291283
 
@@ -74,6 +68,20 @@ echo Bnomei\Fingerprint::js(
 */
 ```
 
+## Cache & Performance
+
+The plugin will flush its cache and do not write any more caches if **global** debug mode is `true`.
+
+Hash and SRI values are cached and only updated when original file is modified.
+
+## Similar Plugins
+
+The following plugins can do cache busting but they do not cache the modified timestamp nor can they do SRI nor do cache busting for non js/css files.
+
+- [bvdputte/kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint)
+- [schnti/kirby3-cachebuster](https://github.com/schnti/kirby3-cachebuster)
+- [diverently/laravel-mix-kirby](https://github.com/diverently/laravel-mix-kirby)
+- 
 ## Settings
 
 | bnomei.fingerprint.       | Default        | Description                                                                         |
@@ -115,11 +123,6 @@ location ~ (.+)\.(?:\w+)\.(js|css)$ {
 
 You can also forward the path of a json encoded manifest file and the plugin will load whatever hash is defined there. This works great for [gulp-rev](https://github.com/sindresorhus/gulp-rev) or with [laravel mix versioning](https://laravel-mix.com/docs/master/versioning).
 
-## Cache & Performance
-
-The plugin will flush its cache and do not write any more caches if **global** debug mode is `true`.
-
-Hash and SRI values are cached and only updated when original file is modified. If you also have the [AutoID Plugin](https://github.com/bnomei/kirby3-autoid) and the file has an autoid field the modified lookup will be at almost zero-cpu cost.
 
 ## Disclaimer
 

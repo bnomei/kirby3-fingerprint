@@ -1,0 +1,13 @@
+parameters:
+    level: 9
+    paths:
+        - classes
+        - index.php
+    excludePaths:
+        - tests
+
+    ignoreErrors:
+        - '#Undefined variable: \$this#'
+        - '#Call to an undefined method Kirby\\Cms\\Ingredients::index\(\)#'
+        -
+            identifier: missingType.iterableValue

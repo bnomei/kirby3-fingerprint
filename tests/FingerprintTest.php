@@ -1,253 +1,158 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 use Bnomei\Fingerprint;
 use Bnomei\FingerprintFile;
-use PHPUnit\Framework\TestCase;
+use Kirby\Filesystem\F;
 
-final class FingerprintTest extends TestCase
-{
-    /*
-     * @var Kirby\Cms\File|Kirby\Cms\FileVersion
-     */
-    private $testFile;
+beforeEach(function () {
+    kirby()->cache('bnomei.fingerprint')->flush();
 
-    /*
-     * @var string
-     */
-    private $assetPath;
+    $this->testFile = page('home')->file('test.png');
+    $this->assetPath = 'assets/asset.png';
+    $this->invalidPath = 'invalid/file.jpg';
+});
+test('construct', function () {
+    $fipr = new Fingerprint;
+    expect($fipr)->toBeInstanceOf(Fingerprint::class);
+});
+test('options', function () {
+    $fipr = new Fingerprint([
+        'https' => false,
+        'debug' => function () {
+            return false;
+        },
+    ]);
+    expect($fipr->option('https'))->toBeFalse()
+        ->and($fipr->option('debug'))->toBeFalse()
+        ->and($fipr->option())->toBeArray();
+});
+test('apply', function () {
+    $fipr = new Fingerprint;
+    expect($fipr->apply('invalid-apply-call', $this->testFile))->toBeNull()
+        ->and($fipr->apply('hash', $this->testFile))->toMatch('/^.*\/test.png\?v=\d{10}$/');
+});
+test('https', function () {
+    $fipr = new Fingerprint;
+    expect($fipr->https('http://example.com'))->toMatch('/^https:/');
 
-    /*
-     * @var string
-     */
-    private $invalidPath;
+    $fipr = new Fingerprint([
+        'https' => false,
+    ]);
+    $this->assertDoesNotMatchRegularExpression('/^https:/', $fipr->https('http://example.com'));
+});
+test('process', function () {
+    $fipr = new Fingerprint;
+    $lookup = $fipr->process($this->testFile);
+    expect($lookup)->toBeArray();
+    $lookup = $fipr->process($this->assetPath);
+    expect($lookup)->toBeArray()
+        ->and($lookup)->toHaveKey('modified')
+        ->and($lookup)->toHaveKey('root')
+        ->and($lookup)->toHaveKey('integrity')
+        ->and($lookup)->toHaveKey('hash');
 
-    public function setUp(): void
-    {
-        kirby()->cache('bnomei.fingerprint')->flush();
+    $root = (new FingerprintFile($this->assetPath))->fileRoot();
+    expect(F::exists($root))->toBeTrue();
 
-        $this->testFile = page('home')->file('test.png');
-        $this->assetPath = 'assets/asset.png';
-        $this->invalidPath = 'invalid/file.jpg';
-    }
+    // this does not work on travis/gh ...
+    // $this->assertTrue(touch($root, time()-24*60*7));
+    // clearstatcache(); // https://stackoverflow.com/a/17380654
+    // ... use copy/unlink instead
+    copy($root, $root.'.bak');
+    unlink($root);
+    copy($root.'.bak', $root);
+    unlink($root.'.bak');
+    $lookupTouched = $fipr->process($this->assetPath);
+    expect($lookup['modified'] !== $lookupTouched['modified'])->toBeTrue()
+        ->and($lookup['hash'] !== $lookupTouched['hash'])->toBeTrue();
+});
+test('cache', function () {
+    $fipr = new Fingerprint;
+    $lookup = $fipr->process($this->testFile);
+    expect($lookup)->toBeArray();
 
-    public function testConstruct()
-    {
-        $fipr = new Fingerprint();
-        $this->assertInstanceOf(Fingerprint::class, $fipr);
-    }
+    // again to trigger cache lookup
+    $lookup = $fipr->process($this->testFile);
+    expect($fipr->read($this->testFile))->toBeArray()
+        ->and($lookup)->toBeArray();
 
-    public function testOptions()
-    {
-        $fipr = new Fingerprint([
-            'https' => false,
-            'debug' => function () {
-                return false;
-            },
-        ]);
-        $this->assertFalse($fipr->option('https'));
-        $this->assertFalse($fipr->option('debug'));
-        $this->assertIsArray($fipr->option());
-    }
+    $fipr = new Fingerprint([
+        'debug' => true,
+    ]);
 
-    public function testApply()
-    {
-        $fipr = new Fingerprint();
-        $this->assertNull($fipr->apply('invalid-apply-call', $this->testFile));
-        $this->assertMatchesRegularExpression(
-            '/^.*\/test.png\?v=\d{10}$/',
-            $fipr->apply('hash', $this->testFile)
-        );
-    }
+    expect($fipr->read($this->testFile))->toBeNull();
+    $lookup = $fipr->process($this->testFile);
 
-    public function testHttps()
-    {
-        $fipr = new Fingerprint();
-        $this->assertMatchesRegularExpression('/^https:/', $fipr->https('http://example.com'));
+    expect($fipr->read($this->testFile))->toBeNull()
+        ->and($fipr->process('/assets/css/main.css')['hash'])->toMatch('/\/assets\/css\/main\.css\?v=\d{10}/')
+        ->and($fipr->process('/assets/js/main.js')['hash'])->toMatch('/\/assets\/js\/main\.js\?v=\d{10}/');
+});
+test('attrs', function () {
+    $fipr = new Fingerprint;
+    $lookup = $fipr->process($this->testFile);
 
-        $fipr = new Fingerprint([
-            'https' => false,
-        ]);
-        $this->assertDoesNotMatchRegularExpression('/^https:/', $fipr->https('http://example.com'));
-    }
+    $attrs = [];
+    $attrs = $fipr->attrs($attrs, $lookup);
+    expect($attrs)->toHaveCount(0);
 
-    public function testProcess()
-    {
-        $fipr = new Fingerprint();
-        $lookup = $fipr->process($this->testFile);
-        $this->assertIsArray($lookup);
-        $lookup = $fipr->process($this->assetPath);
-        $this->assertIsArray($lookup);
-        $this->assertArrayHasKey('modified', $lookup);
-        $this->assertArrayHasKey('root', $lookup);
-        $this->assertArrayHasKey('integrity', $lookup);
-        $this->assertArrayHasKey('hash', $lookup);
+    $attrs = [
+        'integrity' => true,
+    ];
+    $attrs = $fipr->attrs($attrs, $lookup);
+    expect($attrs)->toHaveCount(2)
+        ->and($attrs)->toHaveKey('integrity')
+        ->and($attrs)->toHaveKey('crossorigin');
 
-        $root = (new FingerprintFile($this->assetPath))->fileRoot();
-        $this->assertTrue(F::exists($root));
-        // this does not work on travis/gh ...
-        // $this->assertTrue(touch($root, time()-24*60*7));
-        // clearstatcache(); // https://stackoverflow.com/a/17380654
-        // ... use copy/unlink instead
-        copy($root, $root.'.bak');
-        unlink($root);
-        copy($root.'.bak', $root);
-        unlink($root.'.bak');
-        $lookupTouched = $fipr->process($this->assetPath);
-        $this->assertTrue($lookup['modified'] !== $lookupTouched['modified']);
-        $this->assertTrue($lookup['hash'] !== $lookupTouched['hash']);
-    }
+    $attrs = [
+        'integrity' => 'custom-sri',
+    ];
+    $attrs = $fipr->attrs($attrs, $lookup);
+    expect($attrs)->toHaveCount(2)
+        ->and($attrs)->toHaveKey('integrity')
+        ->and($attrs['integrity'])->toEqual('custom-sri');
 
-    public function testCache()
-    {
-        $fipr = new Fingerprint();
-        $lookup = $fipr->process($this->testFile);
-        $this->assertIsArray($lookup);
-        // again to trigger cache lookup
-        $lookup = $fipr->process($this->testFile);
-        $this->assertIsArray($fipr->read($this->testFile));
-        $this->assertIsArray($lookup);
+    $attrs = [
+        'integrity' => false,
+        'crossorigin' => 'anonymous',
+    ];
+    $attrs = $fipr->attrs($attrs, $lookup);
+    expect($attrs)->toHaveCount(0);
+});
+test('helper', function () {
+    $fipr = new Fingerprint;
+    expect($fipr->helper('nope', '@auto'))->toBeNull();
+});
+test('static url', function () {
+    expect(Fingerprint::url('assets/css/main.css'))->toMatch('/\/assets\/css\/main\.css\?v=\d{10}$/');
+});
+test('static css', function () {
+    expect(Fingerprint::css('assets/test.css'))->toEqual('<link href="/assets/test.css" rel="stylesheet">')
+        ->and(Fingerprint::css('assets/css/main.css'))->toMatch('/\/assets\/css\/main\.css\?v=\d{10}/')
+        ->and(Fingerprint::css('/assets/css/main.css'))->toMatch('/\/assets\/css\/main\.css\?v=\d{10}/')
+        ->and(Fingerprint::css('@auto'))->toMatch('/\/assets\/css\/templates\/default\.css\?v=\d{10}/');
+});
+test('static js', function () {
+    expect(Fingerprint::js('assets/test.js'))->toEqual('<script src="/assets/test.js"></script>')
+        ->and(Fingerprint::js('assets/js/main.js'))->toMatch('/\/assets\/js\/main\.js\?v=\d{10}/')
+        ->and(Fingerprint::js('/assets/js/main.js'))->toMatch('/\/assets\/js\/main\.js\?v=\d{10}/')
+        ->and(Fingerprint::js('@auto'))->toMatch('/\/assets\/js\/templates\/default\.js\?v=\d{10}/');
+});
+test('redirect rules instead of query', function () {
+    $fipr = new Fingerprint([
+        'query' => false,
+    ]);
 
-        $fipr = new Fingerprint([
-            'debug' => true,
-        ]);
-        $this->assertNull($fipr->read($this->testFile));
-        $lookup = $fipr->process($this->testFile);
-        $this->assertNull($fipr->read($this->testFile));
+    expect($fipr->process('/assets/css/main.css')['hash'])->toMatch('/\/assets\/css\/main\.[a-z0-9]{32}\.css/')
+        ->and($fipr->process('/assets/js/main.js')['hash'])->toMatch('/\/assets\/js\/main\.[a-z0-9]{32}\.js/');
+});
+test('manifest instead of query', function () {
+    $fipr = new Fingerprint([
+        'query' => function () {
+            return __DIR__.'/manifest.json';
+        },
+    ]);
 
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/css\/main\.css\?v=\d{10}/',
-            $fipr->process('/assets/css/main.css')['hash']
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/js\/main\.js\?v=\d{10}/',
-            $fipr->process('/assets/js/main.js')['hash']
-        );
-    }
-
-    public function testAttrs()
-    {
-        $fipr = new Fingerprint();
-        $lookup = $fipr->process($this->testFile);
-
-        $attrs = [];
-        $attrs = $fipr->attrs($attrs, $lookup);
-        $this->assertCount(0, $attrs);
-
-        $attrs = [
-            'integrity' => true,
-        ];
-        $attrs = $fipr->attrs($attrs, $lookup);
-        $this->assertCount(2, $attrs);
-        $this->assertArrayHasKey('integrity', $attrs);
-        $this->assertArrayHasKey('crossorigin', $attrs);
-
-        $attrs = [
-            'integrity' => 'custom-sri',
-        ];
-        $attrs = $fipr->attrs($attrs, $lookup);
-        $this->assertCount(2, $attrs);
-        $this->assertArrayHasKey('integrity', $attrs);
-        $this->assertEquals('custom-sri', $attrs['integrity']);
-
-        $attrs = [
-            'integrity' => false,
-            'crossorigin' => 'anonymous',
-        ];
-        $attrs = $fipr->attrs($attrs, $lookup);
-        $this->assertCount(0, $attrs);
-    }
-
-    public function testHelper()
-    {
-        $fipr = new Fingerprint();
-        $this->assertNull($fipr->helper('nope', '@auto'));
-    }
-
-    public function testStaticUrl()
-    {
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/css\/main\.css\?v=\d{10}$/',
-            Fingerprint::url('assets/css/main.css')
-        );
-    }
-
-    public function testStaticCss()
-    {
-        $this->assertEquals(
-            '<link href="/assets/test.css" rel="stylesheet">',
-            Fingerprint::css('assets/test.css')
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/css\/main\.css\?v=\d{10}/',
-            Fingerprint::css('assets/css/main.css')
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/css\/main\.css\?v=\d{10}/',
-            Fingerprint::css('/assets/css/main.css')
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/css\/templates\/default\.css\?v=\d{10}/',
-            Fingerprint::css('@auto')
-        );
-    }
-
-    public function testStaticJs()
-    {
-        $this->assertEquals(
-            '<script src="/assets/test.js"></script>',
-            Fingerprint::js('assets/test.js')
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/js\/main\.js\?v=\d{10}/',
-            Fingerprint::js('assets/js/main.js')
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/js\/main\.js\?v=\d{10}/',
-            Fingerprint::js('/assets/js/main.js')
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/js\/templates\/default\.js\?v=\d{10}/',
-            Fingerprint::js('@auto')
-        );
-    }
-
-    public function testRedirectRulesInsteadOfQuery()
-    {
-        $fipr = new Fingerprint([
-            'query' => false,
-        ]);
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/css\/main\.[a-z0-9]{32}\.css/',
-            $fipr->process('/assets/css/main.css')['hash']
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/js\/main\.[a-z0-9]{32}\.js/',
-            $fipr->process('/assets/js/main.js')['hash']
-        );
-    }
-
-    public function testManifestInsteadOfQuery()
-    {
-        $fipr = new Fingerprint([
-            'query' => function () {
-                return __DIR__ . '/manifest.json';
-            },
-        ]);
-
-        $this->assertMatchesRegularExpression(
-            '/\/assets\/css\/main\.1234567890\.css/',
-            $fipr->process('/assets/css/main.css')['hash']
-        );
-    }
-}
+    expect($fipr->process('/assets/css/main.css')['hash'])->toMatch('/\/assets\/css\/main\.1234567890\.css/');
+});

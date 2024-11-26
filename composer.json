@@ -1,73 +1,75 @@
 {
-  "name": "bnomei/kirby3-fingerprint",
-  "type": "kirby-plugin",
-  "version": "3.2.0",
-  "description": "File Method and css/js helper to add cache-busting hash and optional Subresource Integrity to file",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Bruno Meilick",
-      "email": "b@bnomei.com"
-    }
-  ],
-  "keywords": [
-    "kirby3",
-    "kirby3-cms",
-    "kirby3-plugin",
-    "fingerprint",
-    "hash",
-    "cache-buster",
-    "subresource-integrity",
-    "manifest",
-    "manifest-file",
-    "json",
-    "assets"
-  ],
-  "autoload": {
-    "psr-4": {
-      "Bnomei\\": "classes/"
-    }
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "sort-packages": true,
-    "allow-plugins": {
-      "getkirby/composer-installer": true
-    }
-  },
-  "require": {
-    "php": ">=7.4.0",
-    "getkirby/composer-installer": "^1.2"
-  },
-  "require-dev": {
-    "getkirby/cms": "^3.5",
-    "php-coveralls/php-coveralls": "^2.1",
-    "phpunit/phpunit": "^9.5"
-  },
-  "scripts": {
-    "analyze": "phpstan analyse classes",
-    "fix": "php-cs-fixer fix",
-    "test": [
-      "mkdir -p tests/logs",
-      "@putenv XDEBUG_MODE=coverage",
-      "phpunit --configuration ./phpunit.xml"
+    "name": "bnomei/kirby3-fingerprint",
+    "type": "kirby-plugin",
+    "version": "5.0.0",
+    "description": "File Method and css/js helper to add cache-busting hash and optional Subresource Integrity to file",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruno Meilick",
+            "email": "b@bnomei.com"
+        }
     ],
-    "dist": [
-      "composer install --no-dev --optimize-autoloader",
-      "git rm -rf --cached .; git add .;"
+    "keywords": [
+        "kirby",
+        "kirby-cms",
+        "kirby-plugin",
+        "fingerprint",
+        "hash",
+        "cache-buster",
+        "subresource-integrity",
+        "manifest",
+        "manifest-file",
+        "json",
+        "assets"
     ],
-    "kirby": [
-      "composer install",
-      "composer update",
-      "composer install --working-dir=tests/kirby --no-dev --optimize-autoloader",
-      "composer update --working-dir=tests/kirby"
-    ]
-  },
-  "extra": {
-    "kirby-cms-path": "tests/kirby"
-  },
-  "suggest": {
-    "bnomei/kirby3-security-headers": "Let's make the web a saver place – sensible defaults included.",
-    "diverently/laravel-mix-kirby": "Consider using this plugin instead if all your assets are versioned by laravel mix."
-  }
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "getkirby/composer-installer": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Bnomei\\": "classes/"
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "getkirby/composer-installer": "^1.2"
+    },
+    "require-dev": {
+        "getkirby/cms": "^5.0.0-alpha.4",
+        "larastan/larastan": "^v3.0.0",
+        "laravel/pint": "^1.13",
+        "pestphp/pest": "^v3.5.1",
+        "spatie/ray": "^1.39"
+    },
+    "scripts": {
+        "stan": "./vendor/bin/phpstan",
+        "fix": "./vendor/bin/pint",
+        "test": "./vendor/bin/pest --profile",
+        "dist": [
+            "composer fix",
+            "composer install --no-dev --optimize-autoloader",
+            "git rm -rf --cached .; git add .;"
+        ],
+        "kirby": [
+            "composer install",
+            "composer update",
+            "composer install --working-dir=tests/kirby --no-dev --optimize-autoloader",
+            "composer update --working-dir=tests/kirby",
+            "sed -i.bak 's/function dump(/function xdump(/g' tests/kirby/config/helpers.php",
+            "sed -i.bak 's/function e(/function xe(/g' tests/kirby/config/helpers.php"
+        ]
+    },
+    "extra": {
+        "kirby-cms-path": "tests/kirby"
+    },
+    "suggest": {
+        "bnomei/kirby3-security-headers": "Let's make the web a saver place – sensible defaults included.",
+        "diverently/laravel-mix-kirby": "Consider using this plugin instead if all your assets are versioned by laravel mix."
+    }
 }
