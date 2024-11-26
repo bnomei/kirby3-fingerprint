@@ -20,7 +20,7 @@ File Method and css/js helper to add a cache busting hash and optional [Subresou
 
 ## Usage
 
-> [!ATTENTION]
+> [!WARNING]
 > This Plugin does **not** override the build in `js()`/`css()` helpers. Use `css_f`/`Bnomei\Fingerprint::css` and `js_f`/`Bnomei\Fingerprint::js` when you need them.
 
 ```php
