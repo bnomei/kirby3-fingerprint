@@ -1,6 +1,7 @@
 name: Pest Tests
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "**.php"
