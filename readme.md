@@ -81,7 +81,7 @@ The following plugins can do cache busting but they do not cache the modified ti
 - [bvdputte/kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint)
 - [schnti/kirby3-cachebuster](https://github.com/schnti/kirby3-cachebuster)
 - [diverently/laravel-mix-kirby](https://github.com/diverently/laravel-mix-kirby)
-- 
+
 ## Settings
 
 | bnomei.fingerprint.       | Default        | Description                                                                         |
