@@ -77,7 +77,7 @@ Hash and SRI values are cached and only updated when the original file is modifi
 ## Cache Driver
 For best performance, set either the [global or plugin-specific cache driver](https://getkirby.com/docs/reference/system/options/cache) to one using the server's memory, not the default using files on the hard disk (even on SSDs). If available, I suggest Redis/APCu or leave it at `file` otherwise.
 
-**site/config/config.php
+**site/config/config.php**
 ```php
 return [
   'cache' => [
