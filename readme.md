@@ -70,13 +70,28 @@ echo Bnomei\Fingerprint::js(
 
 ## Cache & Performance
 
-The plugin will flush its cache and do not write any more caches if **global** debug mode is `true`.
+If **global** debug mode is `true,` the plugin will flush its cache and not write any more caches.
 
-Hash and SRI values are cached and only updated when original file is modified.
+Hash and SRI values are cached and only updated when the original file is modified.
+
+## Cache Driver
+For best performance, set either the [global or plugin-specific cache driver](https://getkirby.com/docs/reference/system/options/cache) to one using the server's memory, not the default using files on the hard disk (even on SSDs). If available, I suggest Redis/APCu or leave it at `file` otherwise.
+
+**site/config/config.php
+```php
+return [
+  'cache' => [
+    'driver' => 'apcu', // or redis
+  ],
+  'bnomei.fingerprint.cache' => [
+    'type' => 'apcu', // or redis
+  ],
+];
+```
 
 ## Similar Plugins
 
-The following plugins can do cache busting but they do not cache the modified timestamp nor can they do SRI nor do cache busting for non js/css files.
+The following plugins can do cache busting, but they do not cache the modified timestamp, nor can they do SRI, nor do cache busting for non-js/CSS files.
 
 - [bvdputte/kirby-fingerprint](https://github.com/bvdputte/kirby-fingerprint)
 - [schnti/kirby3-cachebuster](https://github.com/schnti/kirby3-cachebuster)
@@ -103,7 +118,7 @@ This is the default since it works without additional changes to your server but
 
 ### Query option: false
 
-If you disable the query option you also also need to add apache or nginx rules. These rules will redirect css and js files from with hash to the asset on disk.
+If you disable the query option, you also need to add Apache or Nginx rules. These rules will redirect CSS and JS files from with hash to the asset on disk.
 
 **.htaccess** - put this directly after the `RewriteBase` statment
 ```apacheconfig
@@ -121,12 +136,12 @@ location ~ (.+)\.(?:\w+)\.(js|css)$ {
 
 ### Query option: string
 
-You can also forward the path of a json encoded manifest file and the plugin will load whatever hash is defined there. This works great for [gulp-rev](https://github.com/sindresorhus/gulp-rev) or with [laravel mix versioning](https://laravel-mix.com/docs/master/versioning).
+You can also forward the path of a JSON-encoded manifest file, and the plugin will load whatever hash is defined there. This works great for [gulp-rev](https://github.com/sindresorhus/gulp-rev) or with [laravel mix versioning](https://laravel-mix.com/docs/master/versioning).
 
 
 ## Disclaimer
 
-This plugin is provided "as is" with no guarantee. Use it at your own risk and always test it yourself before using it in a production environment. If you find any issues, please [create a new issue](https://github.com/bnomei/kirby3-fingerprint/issues/new).
+This plugin is provided "as is" with no guarantee. You can use it at your own risk and always test it yourself before using it in a production environment. If you find any issues, please [create a new issue](https://github.com/bnomei/kirby3-fingerprint/issues/new).
 
 ## License
 
