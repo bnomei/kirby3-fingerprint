@@ -70,7 +70,8 @@ echo Bnomei\Fingerprint::js(
 
 ## Cache
 
-If **global** debug mode is `true,` the plugin will flush its cache and not write any more caches.
+> [!WARNING]
+> If **global** debug mode is `true,` the plugin will flush its cache and not write any more caches.
 
 Hash and SRI values are cached and only updated when the original file is modified.
 
@@ -133,14 +134,14 @@ location ~ (.+)\.(?:\w+)\.(js|css)$ {
 }
 ```
 
-### Query option: string
+### Query option: string (Manifest files)
 
 You can also forward the path of a JSON-encoded manifest file, and the plugin will load whatever hash is defined there. This works great for [gulp-rev](https://github.com/sindresorhus/gulp-rev) or with [laravel mix versioning](https://laravel-mix.com/docs/master/versioning).
 
 
 ## Disclaimer
 
-This plugin is provided "as is" with no guarantee. You can use it at your own risk and always test it yourself before using it in a production environment. If you find any issues, please [create a new issue](https://github.com/bnomei/kirby3-fingerprint/issues/new).
+This plugin is provided "as is" with no guarantee. You can use it at your own risk and always test it before using it in a production environment. If you find any issues, please [create a new issue](https://github.com/bnomei/kirby3-fingerprint/issues/new).
 
 ## License
 
