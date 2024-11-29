@@ -74,6 +74,20 @@ The plugin will flush its cache and do not write any more caches if **global** d
 
 Hash and SRI values are cached and only updated when original file is modified.
 
+For best performance set the **global** [cache driver](https://getkirby.com/docs/reference/system/options/cache#cache-driver) to one using the servers memory not files on the harddisk (even on SSDs), like APCu or Redis if they are available on your hosting.
+
+```php
+return [
+  'cache' => [
+    'driver' => 'apcu', // redis
+  ],
+  // or per plugin
+  'bnomei.fingerprint.cache' => [
+    'type' => 'apcu', // redis
+  ],
+];
+```
+
 ## Similar Plugins
 
 The following plugins can do cache busting but they do not cache the modified timestamp nor can they do SRI nor do cache busting for non js/css files.
