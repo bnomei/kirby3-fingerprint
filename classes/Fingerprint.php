@@ -140,6 +140,8 @@ final class Fingerprint
             $assetUrl = Url::toTemplateAsset($extension.'/templates', $extension);
             if ($assetUrl) {
                 $url = $assetUrl;
+            } else {
+                return null;
             }
         }
 
