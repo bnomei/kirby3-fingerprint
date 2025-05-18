@@ -91,7 +91,7 @@ final class FingerprintFile
         }
 
         if (! $filename) {
-            return 'xxx';
+            throw new \Exception("File not found: $root");
         }
 
         $url = null;

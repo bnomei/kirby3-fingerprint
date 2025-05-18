@@ -26,6 +26,7 @@ final class Fingerprint
             'digest' => option('bnomei.fingerprint.digest'),
             'https' => option('bnomei.fingerprint.https'),
             'ignore-missing-auto' => option('bnomei.fingerprint.ignore-missing-auto'),
+            'absolute' => option('bnomei.fingerprint.absolute'),
         ];
         $this->options = array_merge($defaults, $options);
 
@@ -72,6 +73,10 @@ final class Fingerprint
     {
         if ($this->option('https') && ! kirby()->system()->isLocal()) {
             $url = str_replace('http://', 'https://', $url);
+        }
+
+        if ($this->option('absolute') === false && kirby()->url() !== '/') { // in CLI
+            $url = '/'.ltrim(str_replace(kirby()->url(), '', $url), '/');
         }
 
         return $url;
