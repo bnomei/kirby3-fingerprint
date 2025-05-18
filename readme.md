@@ -99,13 +99,14 @@ The following plugins can do cache busting, but they do not cache the modified t
 
 ## Settings
 
-| bnomei.fingerprint.       | Default        | Description                                                                         |
-|---------------------------|----------------|-------------------------------------------------------------------------------------|
-| hash | `callback` | will lead to the hashing logic                                                      |
-| integrity | `callback` | use it to set option `'integrity' => null,`                                         |
-| digest | `'sha384'` | Cryptographic digest to be used for SRI hashes either `'sha256'`, `'sha384'` or `'sha512'`. |
-| https | `true` | boolean value or callback to force *https* scheme on all but localhost enviroments. |
-| query | `true` or `string` or `callback` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file               |
+| bnomei.fingerprint. | Default                          | Description                                                                                 |
+|---------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| hash                | `callback`                       | will lead to the hashing logic                                                              |
+| integrity           | `callback`                       | use it to set option `'integrity' => null,`                                                 |
+| digest              | `'sha384'`                       | Cryptographic digest to be used for SRI hashes either `'sha256'`, `'sha384'` or `'sha512'`. |
+| https               | `true`                           | boolean value or callback to force *https* scheme on all but localhost enviroments.         |
+| query               | `true` or `string` or `callback` | `myfile.js?v={HASH}`, `myfile.{HASH}.js` or loaded from manifest file                       |
+| ignore-missing-auto | `true` or `false`                | silently ignore if an asset requested by @auto rule does not exist                          |
 
 
 ### Query option: true (default)

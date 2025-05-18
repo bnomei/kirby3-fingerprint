@@ -40,6 +40,7 @@ Kirby::plugin('bnomei/fingerprint', [
         'integrity' => function ($file, ?string $digest = null, ?string $manifest = null) {
             return (new \Bnomei\FingerprintFile($file))->integrity($digest, $manifest);
         },
+        'ignore-missing-auto' => true,
     ],
     'fileMethods' => [
         'fingerprint' => function () {

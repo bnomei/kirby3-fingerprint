@@ -25,6 +25,7 @@ final class Fingerprint
             'integrity' => option('bnomei.fingerprint.integrity'),
             'digest' => option('bnomei.fingerprint.digest'),
             'https' => option('bnomei.fingerprint.https'),
+            'ignore-missing-auto' => option('bnomei.fingerprint.ignore-missing-auto'),
         ];
         $this->options = array_merge($defaults, $options);
 
@@ -140,6 +141,8 @@ final class Fingerprint
             $assetUrl = Url::toTemplateAsset($extension.'/templates', $extension);
             if ($assetUrl) {
                 $url = $assetUrl;
+            } elseif (! $assetUrl && $this->option('ignore-missing-auto')) {
+                return null;
             }
         }
 
