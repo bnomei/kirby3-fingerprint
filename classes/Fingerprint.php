@@ -76,7 +76,7 @@ final class Fingerprint
         }
 
         if ($this->option('absolute') === false && kirby()->url() !== '/') { // in CLI
-            $url = str_replace(rtrim(kirby()->url(), "/"), '', $url);
+            $url = str_replace(rtrim(kirby()->url(), '/'), '', $url);
         }
 
         return $url;
