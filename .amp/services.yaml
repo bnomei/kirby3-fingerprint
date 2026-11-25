@@ -1,0 +1,11 @@
+services:
+  fingerprint:
+    command: php -S "0.0.0.0:$PORT" -t tests tests/router.php
+    health: /
+    review: false
+    portal:
+      title: Fingerprint test site
+      url: /
+    portals:
+      - title: Kirby Panel
+        url: /panel

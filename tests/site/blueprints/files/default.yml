@@ -1,0 +1,10 @@
+title: Fingerprinted file
+fields:
+  fingerprintInfo:
+    label: Fingerprint
+    type: info
+    text: "{{ file.fingerprint }}"
+  integrityInfo:
+    label: Integrity
+    type: info
+    text: "{{ file.integrity }}"

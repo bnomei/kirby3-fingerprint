@@ -1,7 +1,7 @@
 # Kirby Fingerprint
 
-[![Kirby 5](https://flat.badgen.net/badge/Kirby/5?color=ECC748)](https://getkirby.com)
-![PHP 8.2](https://flat.badgen.net/badge/PHP/8.2?color=4E5B93&icon=php&label)
+[![Kirby 6](https://flat.badgen.net/badge/Kirby/6?color=ECC748)](https://getkirby.com)
+![PHP 8.3+](https://flat.badgen.net/badge/PHP/8.3+?color=4E5B93&icon=php&label)
 ![Release](https://flat.badgen.net/packagist/v/bnomei/kirby3-fingerprint?color=ae81ff&icon=github&label)
 ![Downloads](https://flat.badgen.net/packagist/dt/bnomei/kirby3-fingerprint?color=272822&icon=github&label)
 [![Coverage](https://flat.badgen.net/codeclimate/coverage/bnomei/kirby3-fingerprint?icon=codeclimate&label)](https://codeclimate.com/github/bnomei/kirby3-fingerprint)
@@ -140,6 +140,12 @@ location ~ (.+)\.(?:\w+)\.(js|css)$ {
 
 You can also forward the path of a JSON-encoded manifest file, and the plugin will load whatever hash is defined there. This works great for [gulp-rev](https://github.com/sindresorhus/gulp-rev) or with [laravel mix versioning](https://laravel-mix.com/docs/master/versioning).
 
+
+## Testing against Kirby 6
+
+`composer install` installs the locked Kirby release in `tests/kirby`. Run `composer test` and `composer stan` from the repository root.
+
+In an Amp orb, run `amp orb services ensure` and open **Kirby Panel**. Create a disposable admin at first launch, then open **Site → Home → test.png**. The test site's file blueprint displays the plugin's `fingerprint()` and `integrity()` results; the plugin itself does not install Panel UI. Use **Settings → Replace** with a different PNG. The filename should stay the same, but the `?v=` value and SHA-384 digest should change. On the **Fingerprint test site** portal, the image link should open the replacement and the stylesheet and script should load without browser integrity errors. Replace the image with the original after testing.
 
 ## Disclaimer
 

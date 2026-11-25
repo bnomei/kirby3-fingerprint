@@ -2,6 +2,8 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$kirby = new Kirby;
+$kirby = new Kirby(['roots' => ['index' => __DIR__]]);
 
-echo $kirby->render();
+if (PHP_SAPI !== 'cli') {
+    echo $kirby->render();
+}

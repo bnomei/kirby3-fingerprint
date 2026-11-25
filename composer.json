@@ -25,6 +25,9 @@
     ],
     "config": {
         "optimize-autoloader": true,
+        "platform": {
+            "php": "8.3.0"
+        },
         "sort-packages": true,
         "allow-plugins": {
             "getkirby/composer-installer": true,
@@ -37,33 +40,20 @@
         }
     },
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "getkirby/composer-installer": "^1.2"
     },
     "require-dev": {
-        "getkirby/cms": "^5.0.0-alpha.4",
-        "larastan/larastan": "^v3.0.0",
+        "getkirby/cms": "^6.0",
         "laravel/pint": "^1.13",
         "pestphp/pest": "^v3.5.1",
-        "spatie/ray": "^1.39"
+        "phpstan/phpstan": "^2.1"
     },
     "scripts": {
         "stan": "./vendor/bin/phpstan",
         "fix": "./vendor/bin/pint",
         "test": "./vendor/bin/pest --profile",
-        "dist": [
-            "composer fix",
-            "composer install --no-dev --optimize-autoloader",
-            "git rm -rf --cached .; git add .;"
-        ],
-        "kirby": [
-            "composer install",
-            "composer update",
-            "composer install --working-dir=tests/kirby --no-dev --optimize-autoloader",
-            "composer update --working-dir=tests/kirby",
-            "sed -i.bak 's/function dump(/function xdump(/g' tests/kirby/config/helpers.php",
-            "sed -i.bak 's/function e(/function xe(/g' tests/kirby/config/helpers.php"
-        ]
+        "kirby": "@composer install"
     },
     "extra": {
         "kirby-cms-path": "tests/kirby"

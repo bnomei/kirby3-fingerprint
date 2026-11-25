@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v composer >/dev/null || ! php -r 'exit(PHP_VERSION_ID >= 80300 && extension_loaded("gd") && extension_loaded("mbstring") && extension_loaded("dom") && extension_loaded("curl") ? 0 : 1);'; then
+    sudo apt-get update -qq
+    sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y composer php-cli php-curl php-gd php-mbstring php-xml php-zip
+fi
+composer install --no-interaction --prefer-dist

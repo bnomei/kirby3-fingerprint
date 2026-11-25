@@ -75,8 +75,9 @@ final class Fingerprint
             $url = str_replace('http://', 'https://', $url);
         }
 
-        if ($this->option('absolute') === false && kirby()->url() !== '/') { // in CLI
-            $url = str_replace(rtrim(kirby()->url(), '/'), '', $url);
+        $base = kirby()->url();
+        if ($this->option('absolute') === false && $base !== null && $base !== '/') {
+            $url = str_replace(rtrim($base, '/'), '', $url);
         }
 
         return $url;
@@ -146,7 +147,7 @@ final class Fingerprint
             $assetUrl = Url::toTemplateAsset($extension.'/templates', $extension);
             if ($assetUrl) {
                 $url = $assetUrl;
-            } elseif (! $assetUrl && $this->option('ignore-missing-auto')) {
+            } elseif ($this->option('ignore-missing-auto')) {
                 return null;
             }
         }

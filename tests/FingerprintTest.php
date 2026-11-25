@@ -56,17 +56,22 @@ test('process', function () {
     $root = (new FingerprintFile($this->assetPath))->fileRoot();
     expect(F::exists($root))->toBeTrue();
 
-    // this does not work on travis/gh ...
-    // $this->assertTrue(touch($root, time()-24*60*7));
-    // clearstatcache(); // https://stackoverflow.com/a/17380654
-    // ... use copy/unlink instead
-    copy($root, $root.'.bak');
-    unlink($root);
-    copy($root.'.bak', $root);
-    unlink($root.'.bak');
-    $lookupTouched = $fipr->process($this->assetPath);
-    expect($lookup['modified'] !== $lookupTouched['modified'])->toBeTrue()
-        ->and($lookup['hash'] !== $lookupTouched['hash'])->toBeTrue();
+    $mtime = filemtime($root);
+    try {
+        touch($root, $mtime + 1);
+        clearstatcache(true, $root);
+        $updated = $fipr->process($this->assetPath);
+        expect($updated['modified'])->toBe($mtime + 1)
+            ->and($updated['hash'])->toEndWith('?v='.($mtime + 1));
+    } finally {
+        touch($root, $mtime);
+        clearstatcache(true, $root);
+    }
+});
+test('registered file methods fingerprint the published file', function () {
+    $root = __DIR__.'/content/home/test.png';
+    expect($this->testFile->fingerprint())->toBe($this->testFile->url().'?v='.filemtime($root))
+        ->and($this->testFile->integrity())->toBe('sha384-'.base64_encode(hash_file('sha384', $root, true)));
 });
 test('cache', function () {
     $fipr = new Fingerprint;
