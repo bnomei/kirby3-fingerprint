@@ -7,10 +7,10 @@
 </head>
 <body>
     <h1>Fingerprint test site</h1>
-    <?php if ($file = $page->file('test.png')): ?>
+    <?php if ($file = $page->file('test.png')) { ?>
         <a href="<?= esc($file->fingerprint(), 'attr') ?>">Open <?= esc($file->filename()) ?></a>
         <p>File integrity: <code><?= esc($file->integrity()) ?></code></p>
-    <?php endif ?>
+    <?php } ?>
     <?= js_f('assets/js/main.js', ['integrity' => true]) ?>
 </body>
 </html>
