@@ -2,6 +2,7 @@ name: Fix PHP code style issues
 
 on:
   push:
+    branches: ['**']
     paths:
       - '**.php'
 
